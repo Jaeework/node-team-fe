@@ -12,7 +12,7 @@ const InputWithIcon = ({
   return (
     <div
       className={cn(
-        "bg-background inline-flex items-center gap-2 rounded-lg border border-transparent px-2 shadow-xs",
+        "bg-background inline-flex w-full items-center gap-2 rounded-lg border border-transparent px-2 shadow-xs",
         !readOnly && "has-[:focus-within]:border-primary/30",
         readOnly && "bg-border/30 border-border",
         className,

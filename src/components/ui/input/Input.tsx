@@ -6,7 +6,7 @@ const Input = ({ size = "xl", readOnly, className, ...props }: InputProps) => {
   return (
     <input
       className={cn(
-        "bg-background placeholder:text-primary/55 rounded-lg border border-transparent py-4 text-sm shadow-xs outline-none read-only:cursor-default",
+        "bg-background placeholder:text-primary/55 w-full rounded-lg border border-transparent py-4 text-sm shadow-xs outline-none read-only:cursor-default",
         "[&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-background)]",
         inputSizes[size],
         !readOnly && "focus:border-primary/30",
