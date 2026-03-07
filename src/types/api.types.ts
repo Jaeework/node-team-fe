@@ -1,6 +1,6 @@
 export interface ApiResponse<T> {
   success: boolean;
-  data: T | null;
+  data?: T | null;
 }
 
 export interface ApiError {
