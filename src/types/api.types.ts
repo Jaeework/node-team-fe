@@ -1,7 +1,6 @@
 export interface ApiResponse<T> {
   success: boolean;
-  data: T;
-  token?: string;
+  data?: T | null;
 }
 
 export interface ApiError {
