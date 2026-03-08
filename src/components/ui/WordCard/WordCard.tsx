@@ -12,16 +12,14 @@ import {
 } from "lucide-react";
 
 const WordCard = ({
-  text,
-  meaning,
-  example,
-  example_meaning,
-  type,
-  isSelected = false,
-  onSelect,
-  newsList,
+  word,
   isDone,
+  newsList,
+  isSelected,
+  onSelect,
 }: WordCardProps) => {
+  const { text, meaning, example, example_meaning, type } = word;
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
