@@ -1,4 +1,3 @@
-import React from "react";
 import { useParams } from "react-router-dom";
 import Button from "../../components/ui/button/Button";
 import NewsParagraph from "./components/NewsParagraph";
@@ -57,7 +56,7 @@ const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:px-8">
+    <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       {/* 기사 */}
       <div className="bg-paper grid grid-cols-1 gap-8 md:grid-cols-12">
         <article className="border-border overflow-hidden rounded-2xl bg-white p-7 shadow-sm md:col-span-8 md:p-10">
@@ -79,7 +78,7 @@ const NewsDetailPage = () => {
           </Button>
           {/* 기사 타이틀 섹션 */}
           <section>
-            <h1 className="text-ink mb-8 text-4xl leading-tight md:text-5xl">
+            <h1 className="text-ink mb-8 text-4xl leading-tight font-bold md:text-5xl">
               Title:{newsJson.title}
             </h1>
           </section>
@@ -114,7 +113,7 @@ const NewsDetailPage = () => {
               <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
                 {abbJson.map((text) => (
                   <div className="flex items-baseline gap-1">
-                    <span className="text-primary block whitespace-nowrap">
+                    <span className="text-primary block font-semibold whitespace-nowrap">
                       {text.text}
                     </span>
                     <span className="text-xs text-gray-500">
