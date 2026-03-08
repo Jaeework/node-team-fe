@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import Button from "../../components/ui/button/Button";
 import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
+import WordCard from "../MyWordPage/components/WordCard/WordCard";
 
 const newsJson = {
   title: "US Jobs Report and Oil Prices",
@@ -52,6 +53,33 @@ const abbJson = [
   { text: "S&P 500", meaning: "미국의 주식 시장 지수" },
 ];
 
+const wordList = [
+  {
+    text: "jobs",
+    meaning: "일자리",
+    example: "Many jobs were lost last month.",
+    example_meaning: "지난 달 많은 일자리가 사라졌어요.",
+    type: "word",
+    createdAt: { $date: "2026-03-06T13:56:01.813Z" },
+  },
+  {
+    text: "unemployment",
+    meaning: "실업",
+    example: "The unemployment rate is higher now.",
+    example_meaning: "실업률이 지금 더 높아요.",
+    type: "word",
+    createdAt: { $date: "2026-03-06T13:56:02.113Z" },
+  },
+  {
+    text: "investors",
+    meaning: "투자자들",
+    example: "This news makes investors worried.",
+    example_meaning: "이 소식에 투자자들이 걱정하고 있어요.",
+    type: "word",
+    createdAt: { $date: "2026-03-06T13:56:02.313Z" },
+  },
+];
+
 const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
 
@@ -59,60 +87,58 @@ const NewsDetailPage = () => {
     <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">
       {/* 기사 */}
       <div className="bg-paper grid grid-cols-1 gap-8 md:grid-cols-12">
-        <article className="border-border overflow-hidden rounded-2xl bg-white p-7 shadow-sm md:col-span-8 md:p-10">
+        <article className="border-border relative flex h-[calc(100vh-150px)] flex-col rounded-2xl bg-white p-7 shadow-sm md:col-span-8 md:p-10">
           {/* 기사 정보 섹션(타이틀 위에) */}
-          <section>
-            {newsJson.level} / 발행 날짜:{" "}
-            {new Date(newsJson.published_at.$date).toLocaleDateString()} / 출처:{" "}
-            {newsJson.source} / 파라미터 아이디 : {id}
-          </section>
-          <Button
-            size="icon"
-            variant="outline"
-            radius="md"
-            onClick={() => {
-              window.open(newsJson.url);
-            }}
-          >
-            <BookOpen size={15} />
-          </Button>
-          {/* 기사 타이틀 섹션 */}
-          <section>
-            <h1 className="text-ink mb-8 text-4xl leading-tight font-bold md:text-5xl">
-              Title:{newsJson.title}
-            </h1>
-          </section>
+          <div className="shrink-0">
+            <section className="mb-2 text-sm text-gray-500">
+              {newsJson.level} / 발행 날짜:{" "}
+              {new Date(newsJson.published_at.$date).toLocaleDateString()} /
+              출처: {newsJson.source}
+            </section>
+            <div className="absolute top-7 right-7 z-10 md:top-10 md:right-10">
+              <Button
+                size="icon"
+                variant="outline"
+                radius="md"
+                onClick={() => window.open(newsJson.url)}
+              >
+                <BookOpen size={15} />
+              </Button>
+            </div>
+            {/* 기사 타이틀 섹션 */}
+            <section>
+              <h1 className="text-ink mb-6 text-3xl leading-tight font-bold md:text-4xl">
+                {newsJson.title}
+              </h1>
+            </section>
+          </div>
 
           {/* 기사 본문 섹션 */}
-          <section>
-            <div className="max-w-none space-y-6 overflow-y-auto leading-relaxed text-gray-700 md:h-125">
-              {/* translated_content 인수넘겨울때 좀더 생각해보기. */}
-              {/* 1) 이대로 넘겨도 잘작동은하는데 보기에 안좋음. */}
-              {/* 2) 위에서 객체로 content랑 translated_content랑 react-useMemo 이용해서 미리 합치기 */}
-              {/* 3) 백엔드 바꾸기..? -> Paragraph : [{내용: ~ , 번역 : ~}] */}
-              {newsJson.content.map((text, i) => (
-                <NewsParagraph
-                  key={i}
-                  content={text}
-                  index={i}
-                  translated_content={newsJson.translated_content[i]}
-                />
-              ))}
-            </div>
-          </section>
+          <div className="hover:[&::-webkit-scrollbar-thumb]:bg-primary/30 flex-1 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-track]:bg-transparent">
+            <section className="mb-10">
+              <div className="max-w-none space-y-1 leading-relaxed text-gray-700">
+                {newsJson.content.map((text, i) => (
+                  <NewsParagraph
+                    key={i}
+                    content={text}
+                    index={i}
+                    translated_content={newsJson.translated_content[i]}
+                  />
+                ))}
+              </div>
+            </section>
 
-          {/* 약어 및 축약어 섹션 (하드코딩) */}
-          <section>
-            <div className="border-border mt-16 border-t pt-8">
+            {/* 약어 및 축약어 섹션 (하드코딩) */}
+            <section className="border-border border-t pt-8 pb-4">
               <div className="flex items-center gap-1 pb-1 text-gray-500">
                 <h3 className="mb-4 flex items-center text-xs font-bold tracking-widest text-gray-500 uppercase">
-                  <Info size={15} />
+                  <Info size={15} className="mr-1" />
                   약어 및 축약어
                 </h3>
               </div>
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-3">
-                {abbJson.map((text) => (
-                  <div className="flex items-baseline gap-1">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                {abbJson.map((text, i) => (
+                  <div key={i} className="flex items-baseline gap-2">
                     <span className="text-primary block font-semibold whitespace-nowrap">
                       {text.text}
                     </span>
@@ -122,12 +148,13 @@ const NewsDetailPage = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </article>
         {/* 단어장 부분 (하드코딩) */}
         <aside className="space-y-6 md:col-span-4">
-          <section className="border-border flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
+          <section className="border-border flex h-[calc(100vh-150px)] flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
+            {/* 단어장 헤더 */}
             <div className="border-border flex items-center justify-between border-b p-6">
               <h2 className="text-md flex items-center font-bold">단어장</h2>
               <div className="flex rounded-md bg-gray-100 p-1 text-[10px] font-bold">
@@ -151,31 +178,26 @@ const NewsDetailPage = () => {
                 </Button>
               </div>
             </div>
-            <div className="max-h-150 space-y-4 overflow-y-auto bg-gray-50/50 p-4">
-              <div className="border-border relative rounded-xl border bg-white p-5 shadow-sm">
-                <div className="mb-2 flex items-start justify-between">
-                  <div className="flex items-center">
-                    <span className="text-primary text-md font-bold">
-                      extraordinary
-                    </span>
-                    <button className="hover:text-primary ml-2 text-gray-400 transition-colors"></button>
-                  </div>
-                  <button className="text-gray-300 hover:text-gray-500"></button>
-                </div>
-                <p className="text-ink mb-3 text-sm font-bold">
-                  기이한, 놀라운
-                </p>
-                <div className="border-accent space-y-1 border-l-2 pl-3 text-[13px] text-gray-500 italic">
-                  <p>"The team achieved an extraordinary result."</p>
-                  <p className="text-gray-400 not-italic">
-                    "팀은 놀라운 결과를 달성했습니다."
-                  </p>
-                </div>
-              </div>
+
+            {/* 단어 리스트*/}
+            <div className="hover:[&::-webkit-scrollbar-thumb]:bg-primary/30 flex-1 space-y-4 overflow-y-auto bg-gray-50/50 p-4 pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-track]:bg-transparent">
+              {wordList.map((word, index) => (
+                <WordCard
+                  key={index}
+                  text={word.text}
+                  meaning={word.meaning}
+                  example={word.example}
+                  example_meaning={word.example_meaning}
+                  isSelected={false}
+                  type={word.type as "word" | "abbreviation" | "idiom"}
+                  onSelect={() => {}}
+                  newsList={[]}
+                  isDone={false}
+                />
+              ))}
             </div>
           </section>
         </aside>
-        {/* 단어장 부분끝. */}
       </div>
     </main>
   );
