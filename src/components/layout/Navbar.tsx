@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { User, LogOut, CircleUser } from "lucide-react";
+import {
+  User,
+  LogOut,
+  CircleUser,
+  Home,
+  LibraryBig,
+  FolderHeart,
+} from "lucide-react";
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
@@ -8,44 +15,52 @@ const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `pb-1 transition-all duration-200 border-b-2 ${
+    `pb-1 transition-all duration-200 border-b-2 flex items-center ${
       isActive
         ? "border-primary text-primary font-bold"
-        : "border-transparent text-ink font-medium hover:text-primary hover:border-primary hover:font-bold"
+        : "border-transparent text-ink font-semibold hover:text-primary hover:border-primary hover:font-bold"
     }`;
 
   return (
     <nav className="bg-background border-border relative z-50 border-b shadow-sm">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-8">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Logo" className="h-12 w-auto object-contain" />
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-12 w-auto object-contain md:h-14"
+          />
         </Link>
 
         <div className="flex items-center">
-          <div className="mr-10 flex items-center gap-8 text-base">
+          <div className="mr-4 flex items-center gap-4 text-base md:mr-10 md:gap-8">
             <NavLink to="/dashboard" className={navLinkClass}>
-              Home
+              <Home className="block h-5 w-5 md:h-6 md:w-6 lg:hidden" />
+              <span className="hidden lg:block">Home</span>
             </NavLink>
+
             <NavLink to="/articles" className={navLinkClass}>
-              Articles
+              <LibraryBig className="block h-5 w-5 md:h-6 md:w-6 lg:hidden" />
+              <span className="hidden lg:block">Articles</span>
             </NavLink>
+
             <NavLink to="/me" className={navLinkClass}>
-              My Page
+              <FolderHeart className="block h-5 w-5 md:h-6 md:w-6 lg:hidden" />
+              <span className="hidden lg:block">My Page</span>
             </NavLink>
           </div>
 
-          <div className="border-border relative border-l pl-6">
+          <div className="border-border relative border-l pl-4 md:pl-6">
             {isLogin ? (
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)} //포커스 없으면 자동 닫히기
-                  className="hover:bg-paper flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+                  onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
+                  className="hover:bg-paper flex h-8 w-8 items-center justify-center rounded-full transition-colors md:h-10 md:w-10"
                 >
-                  <User className="text-ink hover:text-primary h-6 w-6 transition-colors" />
+                  <User className="text-ink hover:text-primary h-5 w-5 transition-colors md:h-6 md:w-6" />
                 </button>
 
-                {/* 유저 아이콘 드롭다운 */}
                 {isDropdownOpen && (
                   <div className="bg-background border-border absolute left-1/2 mt-2 w-48 -translate-x-1/2 overflow-hidden rounded-lg border py-1 shadow-md">
                     <Link
@@ -65,7 +80,7 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="text-ink hover:text-primary font-medium transition-colors"
+                className="text-ink hover:text-primary text-sm font-semibold transition-colors md:text-base"
               >
                 Login
               </Link>
