@@ -93,7 +93,7 @@ const NewsDetailPage = () => {
             <section className="mb-2 text-sm text-gray-500">
               {newsJson.level} / 발행 날짜:{" "}
               {new Date(newsJson.published_at.$date).toLocaleDateString()} /
-              출처: {newsJson.source}
+              출처: {newsJson.source} / 아이디 : {id}
             </section>
             <div className="absolute top-7 right-7 z-10 md:top-10 md:right-10">
               <Button

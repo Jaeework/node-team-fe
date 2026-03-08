@@ -12,7 +12,7 @@ const NewsParagraph = ({
 
   return (
     <div className="group relative border-b border-gray-100 p-2 pb-4 transition-colors last:border-0 hover:bg-gray-50/50">
-      <div className="relative pr-12">
+      <div className="relative pr-14">
         <p className="text-ink flex-1 leading-relaxed">
           <span className="text-primary/70 mr-2 font-bold">{index + 1}.</span>
           {content}
