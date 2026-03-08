@@ -6,6 +6,11 @@ export interface User {
   level: UserLevel;
 }
 
+export interface LoginWithEmailData {
+  user: User;
+  token: string;
+}
+
 export interface UserState {
   user: User | null;
   isLoading: boolean;

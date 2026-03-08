@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { User, UserLevel, UserState } from "./user.types";
+import type {
+  LoginWithEmailData,
+  User,
+  UserLevel,
+  UserState,
+} from "./user.types";
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
 
@@ -27,7 +32,7 @@ export const registerUser = createAsyncThunk<
       if (!level) {
         return rejectWithValue("레벨을 선택해주세요.");
       }
-      const res = await api.post<ApiResponse<User>>("/api/auth/signup", {
+      const res = await api.post<ApiResponse<User>>("/auth/signup", {
         nickname,
         email,
         level,
@@ -52,6 +57,61 @@ export const registerUser = createAsyncThunk<
   },
 );
 
+export const loginWithEmail = createAsyncThunk<
+  User,
+  { email: string; password: string },
+  { rejectValue: string }
+>("user/loginWithEmail", async ({ email, password }, { rejectWithValue }) => {
+  try {
+    if (!email || !password) {
+      return rejectWithValue("이메일과 패스워드를 입력해주세요.");
+    }
+    const res = await api.post<ApiResponse<LoginWithEmailData>>(
+      "/auth/signin",
+      {
+        email,
+        password,
+      },
+    );
+    const data = res.data.data;
+
+    if (!data) {
+      return rejectWithValue("로그인 중 오류가 발생했습니다.");
+    }
+
+    sessionStorage.setItem("token", data.token);
+    return data.user;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(error.message || "로그인 중 오류가 발생했습니다.");
+    }
+    return rejectWithValue("로그인 중 오류가 발생했습니다.");
+  }
+});
+
+export const loginWithToken = createAsyncThunk<
+  User,
+  void,
+  { rejectValue: string }
+>("user/loginWithToken", async (_, { rejectWithValue }) => {
+  try {
+    const res = await api.get<ApiResponse<User>>("/user/me");
+
+    const data = res.data.data;
+
+    if (!data) {
+      return rejectWithValue("로그인 중 오류가 발생했습니다.");
+    }
+
+    return data;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(error.message || "로그인 중 오류가 발생했습니다.");
+    }
+    return rejectWithValue("로그인 중 오류가 발생했습니다.");
+  }
+});
+
 const initialState: UserState = {
   user: null,
   isLoading: false,
@@ -67,6 +127,9 @@ const userSlice = createSlice({
       state.loginError = null;
       state.registrationError = null;
     },
+    clearUserState(state) {
+      state.user = null;
+    },
   },
   extraReducers(builder) {
     builder
@@ -81,6 +144,21 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.registrationError =
           action.payload || "회원가입 중 오류가 발생했습니다.";
+      })
+      .addCase(loginWithEmail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithEmail.fulfilled, (state, action) => {
+        state.loginError = null;
+        state.user = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(loginWithEmail.rejected, (state, action) => {
+        state.loginError = action.payload || "로그인 중 오류가 발생했습니다.";
+        state.isLoading = false;
+      })
+      .addCase(loginWithToken.fulfilled, (state, action) => {
+        state.user = action.payload;
       });
   },
 });
