@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { User, UserState } from "./user.types";
+import type { User, UserLevel, UserState } from "./user.types";
 import api from "../../lib/axios";
-import { isApiError } from "../../types/api.types";
+import { isApiError, type ApiResponse } from "../../types/api.types";
 
 export const registerUser = createAsyncThunk<
   User,
   {
     nickname: string;
     email: string;
-    level: string;
+    level: UserLevel;
     password: string;
     navigate: (path: string) => void;
   },
@@ -27,12 +27,17 @@ export const registerUser = createAsyncThunk<
       if (!level) {
         return rejectWithValue("레벨을 선택해주세요.");
       }
-      const { data } = await api.post("/api/auth/signup", {
+      const res = await api.post<ApiResponse<User>>("/api/auth/signup", {
         nickname,
         email,
         level,
         password,
       });
+
+      const data = res.data.data;
+      if (!data) {
+        return rejectWithValue("회원가입 중 오류가 발생했습니다.");
+      }
 
       navigate("/login");
       return data;
