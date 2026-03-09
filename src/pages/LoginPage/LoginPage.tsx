@@ -1,13 +1,16 @@
 import { EyeOff, Lock, Mail } from "lucide-react";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import Button from "../../components/ui/button/Button";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { clearErrors, loginWithEmail } from "../../features/user/userSlice";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { useState } from "react";
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
   const loginError = useAppSelector((state) => state.user.loginError);
   const [formData, setFormData] = useState({
     email: "",
@@ -40,7 +43,10 @@ const LoginPage = () => {
     e.preventDefault();
     dispatch(clearErrors());
     const { email, password } = formData;
-    await dispatch(loginWithEmail({ email, password }));
+    const result = await dispatch(loginWithEmail({ email, password }));
+    if (loginWithEmail.fulfilled.match(result)) {
+      navigate(from, { replace: true });
+    }
   };
 
   return (
