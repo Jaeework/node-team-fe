@@ -65,18 +65,19 @@ const Navbar = () => {
                 </Button>
 
                 {isDropdownOpen && (
-                  <div className="bg-background border-border absolute left-1/2 mt-2 w-48 -translate-x-1/2 overflow-hidden rounded-lg border py-1 shadow-md">
+                  <div className="bg-background border-border absolute -right-2 z-60 mt-2 w-40 overflow-hidden rounded-lg border py-1 shadow-md md:-right-4 md:w-48">
                     <Link
                       to="/mypage"
-                      className="text-ink hover:bg-border hover:text-primary flex items-center gap-3 px-4 py-3 text-sm transition-colors"
+                      className="text-ink hover:bg-paper hover:text-ink flex items-center gap-2.5 px-3 py-2.5 text-xs font-medium transition-colors"
                     >
                       <CircleUser className="h-4 w-4" />
                       Profile
                     </Link>
+
                     <Button
                       variant="ghost"
                       isFullWidth
-                      className="justify-start px-4 py-3 text-sm font-normal"
+                      className="justify-start px-3 py-2.5 text-xs font-medium"
                       onClick={() => {}}
                     >
                       <LogOut className="h-4 w-4" />
