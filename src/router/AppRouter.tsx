@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "../pages/LandingPage/LandingPage";
+import ArticleListPage from "../pages/ArticleListPage/ArticleListPage";
 import AppLayout from "../components/layout/AppLayout";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
@@ -12,6 +13,7 @@ const AppRouter = () => {
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<LandingPage />} />
+<<<<<<< syj/15-signin
       </Route>
       <Route element={<PrivateRoute />}>
         <Route element={<AppLayout />}>
@@ -23,6 +25,11 @@ const AppRouter = () => {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
         </Route>
+=======
+        <Route path="/articles" element={<ArticleListPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+>>>>>>> develop
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
