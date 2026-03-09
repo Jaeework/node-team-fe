@@ -1,5 +1,9 @@
-import axios, { type AxiosError } from "axios";
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import type { ApiError } from "../types/api.types";
+
+interface RetryAxiosRequestConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 const BASE_URL = import.meta.env.VITE_BACKEND;
 
@@ -28,7 +32,22 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => response,
-  (error: AxiosError<ApiError>) => {
+  async (error: AxiosError<ApiError>) => {
+    const originalRequest = error.config as RetryAxiosRequestConfig;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const { data } = await api.post("/auth/refresh");
+        sessionStorage.setItem("token", data.data.token);
+        originalRequest.headers.authorization = `Bearer ${data.data.token}`;
+        return api(originalRequest);
+      } catch (error) {
+        sessionStorage.removeItem("token");
+        return Promise.reject({});
+      }
+    }
     const data = error.response?.data;
     const message = data?.message ?? error.message ?? "알 수 없는 오류";
     const isUserError = data?.isUserError ?? false;
