@@ -9,9 +9,10 @@ import {
   FolderHeart,
 } from "lucide-react";
 import logo from "../../assets/logo.png";
+import Button from "../ui/button/Button";
 
 const Navbar = () => {
-  const isLogin: boolean = true;
+  const isLogin: boolean = false;
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -28,7 +29,7 @@ const Navbar = () => {
           <img
             src={logo}
             alt="Logo"
-            className="h-12 w-auto object-contain md:h-14"
+            className="h-9 w-auto object-contain md:h-14"
           />
         </Link>
 
@@ -53,36 +54,41 @@ const Navbar = () => {
           <div className="border-border relative border-l pl-4 md:pl-6">
             {isLogin ? (
               <div className="relative">
-                <button
+                <Button
+                  variant="ghost"
+                  size="default"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
-                  className="hover:bg-paper flex h-8 w-8 items-center justify-center rounded-full transition-colors md:h-10 md:w-10"
+                  className="rounded-full p-2"
                 >
-                  <User className="text-ink hover:text-primary h-5 w-5 transition-colors md:h-6 md:w-6" />
-                </button>
+                  <User className="h-5 w-5 md:h-6 md:w-6" />
+                </Button>
 
                 {isDropdownOpen && (
-                  <div className="bg-background border-border absolute left-1/2 mt-2 w-48 -translate-x-1/2 overflow-hidden rounded-lg border py-1 shadow-md">
+                  <div className="bg-background border-border absolute -right-2 z-60 mt-2 w-40 overflow-hidden rounded-lg border py-1 shadow-md md:-right-4 md:w-48">
                     <Link
                       to="/mypage"
-                      className="text-ink hover:bg-border hover:text-primary flex items-center gap-3 px-4 py-3 text-sm transition-colors"
+                      className="text-ink hover:bg-paper hover:text-ink flex items-center gap-2.5 px-3 py-2.5 text-xs font-medium transition-colors"
                     >
                       <CircleUser className="h-4 w-4" />
                       Profile
                     </Link>
-                    <button className="text-ink hover:bg-border hover:text-primary flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors">
+
+                    <Button
+                      variant="ghost"
+                      isFullWidth
+                      className="justify-start px-3 py-2.5 text-xs font-medium"
+                      onClick={() => {}}
+                    >
                       <LogOut className="h-4 w-4" />
                       Logout
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
             ) : (
-              <Link
-                to="/login"
-                className="text-ink hover:text-primary text-sm font-semibold transition-colors md:text-base"
-              >
-                Login
+              <Link to="/login">
+                <Button variant="ghost">Login</Button>
               </Link>
             )}
           </div>

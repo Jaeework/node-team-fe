@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import Button from "../../components/ui/button/Button";
 import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
-import WordCard from "../MyWordPage/components/WordCard/WordCard";
+import WordCard from "../../components/ui/WordCard/WordCard";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { fetchNewsDetail } from "../../features/news/newsSlice";
 import { useEffect, useState, useMemo } from "react";

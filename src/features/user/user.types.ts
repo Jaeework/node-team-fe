@@ -14,6 +14,7 @@ export interface LoginWithEmailData {
 export interface UserState {
   user: User | null;
   isLoading: boolean;
+  isInitialized: boolean;
   registrationError: string | null;
   loginError: string | null;
 }

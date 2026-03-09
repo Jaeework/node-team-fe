@@ -115,6 +115,7 @@ export const loginWithToken = createAsyncThunk<
 const initialState: UserState = {
   user: null,
   isLoading: false,
+  isInitialized: false,
   registrationError: null,
   loginError: null,
 };
@@ -123,12 +124,16 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearErrors(state) {
-      state.loginError = null;
-      state.registrationError = null;
+    setUser(state, action) {
+      state.user = action.payload;
     },
     clearUserState(state) {
       state.user = null;
+      sessionStorage.removeItem("token");
+    },
+    clearErrors(state) {
+      state.loginError = null;
+      state.registrationError = null;
     },
   },
   extraReducers(builder) {
@@ -159,9 +164,13 @@ const userSlice = createSlice({
       })
       .addCase(loginWithToken.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.isInitialized = true;
+      })
+      .addCase(loginWithToken.rejected, (state) => {
+        state.isInitialized = true;
       });
   },
 });
 
-export const { clearErrors } = userSlice.actions;
+export const { setUser, clearUserState, clearErrors } = userSlice.actions;
 export default userSlice.reducer;
