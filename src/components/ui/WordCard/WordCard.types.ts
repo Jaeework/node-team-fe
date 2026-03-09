@@ -15,7 +15,7 @@ export type Word = {
 export type WordCardProps = {
   word: Word;
 
-  isSelected: boolean;
+  isSelected?: boolean;
   onSelect?: () => void;
 
   newsList?: NewsItem[];
