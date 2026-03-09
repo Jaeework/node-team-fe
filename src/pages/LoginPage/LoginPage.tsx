@@ -9,7 +9,7 @@ const LoginPage = () => {
   const handleLoginTest = async () => {
     await dispatch(
       loginWithEmail({
-        email: "yoo@test.com",
+        email: "yang@test.com",
         password: "test1234!",
       }),
     );
