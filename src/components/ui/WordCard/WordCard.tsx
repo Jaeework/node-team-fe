@@ -10,6 +10,7 @@ import {
   BookOpen,
   CheckCircle,
 } from "lucide-react";
+import Button from "../button/Button";
 
 const WordCard = ({
   word,
@@ -31,9 +32,13 @@ const WordCard = ({
             <h3 className="text-primary text-2xl font-bold wrap-break-word">
               {text}
             </h3>
-            <button className="hover:text-primary hover:bg-paper shrink-0 rounded-full p-1 text-gray-400 transition-colors">
+            <Button
+              variant="ghost"
+              size="xs"
+              className="rounded-full p-1.5 text-gray-400"
+            >
               <Volume2 className="h-5 w-5" />
-            </button>
+            </Button>
           </div>
 
           {/* 상단 뱃지들 */}
@@ -67,16 +72,17 @@ const WordCard = ({
         </div>
 
         {onSelect && (
-          <button
+          <Button
+            variant="ghost"
             onClick={onSelect}
-            className="hover:text-primary shrink-0 text-gray-400 transition-colors"
+            className="p-1 text-gray-400"
           >
             {isSelected ? (
               <CheckSquare className="text-primary h-6 w-6" />
             ) : (
               <Square className="h-6 w-6" />
             )}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -97,12 +103,15 @@ const WordCard = ({
       {newsList && newsList.length > 0 && (
         <div className="border-border mt-auto pt-5">
           <div className="border-border relative border-t pt-3">
-            <button
+            <Button
+              variant="ghost"
+              isFullWidth
               onClick={() => setIsExpanded(!isExpanded)}
               onBlur={() => setTimeout(() => setIsExpanded(false), 100)}
-              className="hover:text-primary flex w-full cursor-pointer items-center justify-between text-sm text-gray-500 transition-colors"
+              className="justify-between px-0 font-medium text-gray-500 hover:bg-transparent"
+              // px-0과 hover:bg-transparent는 디자인 의도에 따라 선택하세요
             >
-              <span className="flex items-center gap-2 font-medium">
+              <span className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
                 Related Articles ({newsList.length})
               </span>
@@ -111,7 +120,7 @@ const WordCard = ({
               ) : (
                 <ChevronDown className="h-4 w-4" />
               )}
-            </button>
+            </Button>
 
             {isExpanded && (
               <div className="border-border bg-border absolute top-full left-0 z-50 mt-3 flex w-full flex-col gap-2 rounded-lg border p-3 text-sm shadow-xl">
