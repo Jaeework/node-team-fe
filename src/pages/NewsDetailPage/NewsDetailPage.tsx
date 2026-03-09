@@ -143,16 +143,12 @@ const NewsDetailPage = () => {
               {filteredWords.map((word, index) => (
                 <div key={index} className="w-full">
                   <WordCard
-                    key={index}
-                    text={word.text}
-                    meaning={word.meaning}
-                    example={word.example}
-                    example_meaning={word.example_meaning}
+                    word={word}
                     isSelected={word.isDone}
-                    type={word.type}
-                    onSelect={() => {}}
-                    newsList={[]}
                     isDone={word.isDone}
+                    onSelect={() => {
+                      // 단어 선택 시 동작할 로직
+                    }}
                   />
                 </div>
               ))}
