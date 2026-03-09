@@ -1,23 +1,14 @@
 import { EyeOff, Lock, Mail } from "lucide-react";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import Button from "../../components/ui/button/Button";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { clearErrors, loginWithEmail } from "../../features/user/userSlice";
-import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import Label from "../../components/ui/label/Label";
+import useLoginForm from "../../hooks/useLogin";
+import type { loginField } from "./LoginPage.types";
 
 const LoginPage = () => {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from || "/";
-  const loginError = useAppSelector((state) => state.user.loginError);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const fields = [
+  const { loginError, handleChange, handleSubmit } = useLoginForm();
+  const fields: loginField[] = [
     {
       label: "Email Address",
       type: "email",
@@ -25,6 +16,7 @@ const LoginPage = () => {
       name: "email",
       placeholder: "Enter your email address",
       leftIcon: <Mail size={16} />,
+      autoComplete: "email",
     },
     {
       label: "Password",
@@ -34,21 +26,9 @@ const LoginPage = () => {
       placeholder: "Enter your password",
       leftIcon: <Lock size={16} />,
       rightIcon: <EyeOff size={16} />,
+      autoComplete: "current-password",
     },
   ];
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-  const handleSubmit = async (e: React.SubmitEvent) => {
-    e.preventDefault();
-    dispatch(clearErrors());
-    const { email, password } = formData;
-    const result = await dispatch(loginWithEmail({ email, password }));
-    if (loginWithEmail.fulfilled.match(result)) {
-      navigate(from, { replace: true });
-    }
-  };
 
   return (
     <div className="w-full">
@@ -57,27 +37,16 @@ const LoginPage = () => {
           <h2 className="text-ink-900 mb-2 text-3xl font-extrabold">
             Welcome Back
           </h2>
-          <p className="text-ink-500">Log in to access your dashboard</p>
+          <p className="text-ink/50">Log in to access your dashboard</p>
         </div>
-        {loginError && (
-          <span className="text-sm text-red-500">{loginError}</span>
-        )}
+        {loginError && <p className="text-sm text-red-500">{loginError}</p>}
         <form className="space-y-6" onSubmit={handleSubmit}>
           {fields.map((field) => (
             <div key={field.id}>
               <Label size="sm" htmlFor={field.name}>
                 {field.label}
               </Label>
-              <InputWithIcon
-                leftIcon={field.leftIcon}
-                id={field.id}
-                name={field.name}
-                placeholder={field.placeholder}
-                required
-                type={field.type}
-                rightIcon={field.rightIcon || null}
-                onChange={handleChange}
-              />
+              <InputWithIcon {...field} onChange={handleChange} required />
             </div>
           ))}
 
@@ -92,7 +61,7 @@ const LoginPage = () => {
           </Button>
         </form>
         <div className="mt-1 pt-6 text-center">
-          <p className="text-ink-500">
+          <p className="text-ink/50">
             Don't have an account?
             <Link
               className="text-primary ml-1 font-bold underline-offset-4 hover:underline"
@@ -104,12 +73,10 @@ const LoginPage = () => {
         </div>
         <div className="relative my-8">
           <div className="absolute inset-0 flex items-center">
-            <div className="border-ink-200 dark:border-ink-800 w-full border-t"></div>
+            <div className="border-ink/50 w-full border-t"></div>
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="text-ink-500 dark:bg-ink-900 bg-white px-2">
-              Or continue with
-            </span>
+            <span className="text-ink/50 bg-white px-2">Or continue with</span>
           </div>
         </div>
         <div className="grid grid-cols-1">
@@ -118,7 +85,7 @@ const LoginPage = () => {
             size="lg"
             radius="lg"
             isFullWidth
-            className="hover:bg-ink-50 transition-colors"
+            className="hover:bg-border/30 transition-colors"
           >
             <img
               alt=""
