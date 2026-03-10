@@ -36,6 +36,19 @@ const WordCard = ({
               variant="ghost"
               size="xs"
               className="rounded-full p-1.5 text-gray-400"
+              onClick={() => {
+                // 1. 음성 합성 객체 생성
+                const utterance = new SpeechSynthesisUtterance(text);
+
+                // 2. 언어 설정 (영어 뉴스이므로 영어 설정)
+                utterance.lang = "en-US";
+
+                // 3. 속도나 피치 조절 가능
+                utterance.rate = 0.8; // 속도 (0.1 ~ 10)
+
+                // 4. 재생
+                window.speechSynthesis.speak(utterance);
+              }}
             >
               <Volume2 className="h-5 w-5" />
             </Button>
