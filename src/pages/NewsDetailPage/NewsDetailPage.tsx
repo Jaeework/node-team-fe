@@ -4,7 +4,7 @@ import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { fetchNewsDetail } from "../../features/news/newsSlice";
+import { fetchNewsDetail, saveUserWords } from "../../features/news/newsSlice";
 import { useEffect, useState, useMemo, useRef } from "react";
 
 const NewsDetailPage = () => {
@@ -46,10 +46,6 @@ const NewsDetailPage = () => {
 
   if (isLoading) {
     return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   if (!currentNews) {
@@ -180,7 +176,17 @@ const NewsDetailPage = () => {
               className="mx-4 mt-4 mb-2 w-[calc(100%-2rem)] pt-3 pb-3 font-medium"
               disabled={selectedIds.length === 0}
               onClick={() => {
-                // 유저 단어저장 API 호출
+                dispatch(saveUserWords({ wordIds: selectedIds }))
+                  .unwrap()
+                  .then(() => {
+                    alert("단어가 저장되었습니다!");
+                    setSelectedIds([]);
+                  })
+                  .catch((err) => {
+                    alert(
+                      err || "단어 저장에 실패했습니다. 다시 시도해주세요.",
+                    );
+                  });
               }}
             >
               {selectedIds.length > 0

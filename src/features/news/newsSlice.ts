@@ -14,7 +14,6 @@ export const fetchNewsDetail = createAsyncThunk<
       `/news/${newsId}`,
     );
 
-    console.log(response);
     const result = response.data?.data;
 
     if (!result || !result.news) {
@@ -28,6 +27,23 @@ export const fetchNewsDetail = createAsyncThunk<
       );
     }
     return rejectWithValue("뉴스 상세 정보를 가져오는 중 오류가 발생했습니다.");
+  }
+});
+
+export const saveUserWords = createAsyncThunk<
+  void,
+  { wordIds: string[] },
+  { rejectValue: string }
+>("news/saveUserWords", async ({ wordIds }, { rejectWithValue }) => {
+  try {
+    await api.post("/user/words", { wordIds });
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(
+        error.message || "단어 저장 중 오류가 발생했습니다.",
+      );
+    }
+    return rejectWithValue("단어 저장 중 오류가 발생했습니다.");
   }
 });
 
@@ -66,6 +82,17 @@ const newsSlice = createSlice({
         state.isLoading = false;
         state.error =
           action.payload || "뉴스 상세 정보를 가져오는 중 오류가 발생했습니다.";
+      })
+      .addCase(saveUserWords.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(saveUserWords.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(saveUserWords.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "단어 저장 중 오류가 발생했습니다.";
       });
   },
 });
