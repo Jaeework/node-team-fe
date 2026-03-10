@@ -90,7 +90,6 @@ const NewsDetailPage = () => {
                   <NewsParagraph
                     key={i}
                     content={text}
-                    index={i}
                     translated_content={currentNews.translated_content[i]}
                   />
                 ))}
