@@ -52,7 +52,7 @@ api.interceptors.response.use(
         );
         originalRequest.headers.authorization = `Bearer ${data.data.token}`;
         return api(originalRequest);
-      } catch (error) {
+      } catch {
         sessionStorage.removeItem("token");
         window.dispatchEvent(new CustomEvent("auth:logout"));
         return Promise.reject({
