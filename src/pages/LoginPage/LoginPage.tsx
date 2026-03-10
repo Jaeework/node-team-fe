@@ -48,8 +48,8 @@ const LoginPage = () => {
   ];
 
   return (
-    <div className="w-full md:py-8">
-      <div className="shadow-primary/5 md:border-primary/5 w-full max-w-md bg-white p-8 shadow-xl sm:min-w-md md:rounded-xl md:p-12">
+    <div className="flex min-h-full w-screen items-center justify-center md:py-8">
+      <div className="shadow-primary/5 md:border-primary/5 w-full max-w-md bg-white p-8 shadow-xl md:min-w-md md:rounded-xl md:p-12">
         <div className="mb-8 text-center">
           <h1 className="text-ink-900 mb-2 text-3xl font-extrabold tracking-[-0.033em]">
             Welcome Back
