@@ -9,6 +9,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 
 const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const dispatch = useAppDispatch();
   const [filter, setFilter] = useState<"word" | "idiom">("word");
@@ -17,6 +18,14 @@ const NewsDetailPage = () => {
 
   const { currentNews, currentWords, currentAbbreviations, isLoading, error } =
     useAppSelector((state) => state.news);
+
+  const handleSelect = (wordId: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(wordId)
+        ? prev.filter((id) => id !== wordId)
+        : [...prev, wordId],
+    );
+  };
 
   const handelFilterChange = (type: "word" | "idiom") => {
     setFilter(type);
@@ -146,7 +155,6 @@ const NewsDetailPage = () => {
                 </Button>
               </div>
             </div>
-
             {/* 단어 리스트*/}
             <div
               ref={scrollRef}
@@ -156,15 +164,30 @@ const NewsDetailPage = () => {
                 <div key={index} className="w-full">
                   <WordCard
                     word={word}
-                    isSelected={word.isDone}
                     isDone={word.isDone}
+                    isSelected={selectedIds.includes(word.id)}
                     onSelect={() => {
-                      // 단어 선택 시 동작할 로직
+                      handleSelect(word.id);
                     }}
                   />
                 </div>
               ))}
             </div>
+            <Button
+              size="xl"
+              variant="primary"
+              radius="md"
+              className="mx-4 mt-4 mb-2 w-[calc(100%-2rem)] pt-3 pb-3 font-medium"
+              disabled={selectedIds.length === 0}
+              onClick={() => {
+                console.log("저장될 단어 ID 배열:", selectedIds);
+                // 여기에 API 요청 로직 추가
+              }}
+            >
+              {selectedIds.length > 0
+                ? `${selectedIds.length}개의 단어 저장하기`
+                : "저장할 단어를 선택해 주세요"}
+            </Button>
           </section>
         </aside>
       </div>
