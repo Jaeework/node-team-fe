@@ -46,12 +46,12 @@ const LoginPage = () => {
   ];
 
   return (
-    <div className="w-full">
-      <div className="shadow-primary/5 md:border-primary/5 w-full max-w-md bg-white p-8 shadow-xl md:rounded-xl md:p-12">
+    <div className="w-full md:py-8">
+      <div className="shadow-primary/5 md:border-primary/5 w-full max-w-md bg-white p-8 shadow-xl sm:min-w-md md:rounded-xl md:p-12">
         <div className="mb-8 text-center">
-          <h2 className="text-ink-900 mb-2 text-3xl font-extrabold">
+          <h1 className="text-ink-900 mb-2 text-3xl font-extrabold tracking-[-0.033em]">
             Welcome Back
-          </h2>
+          </h1>
           <p className="text-ink/50">Log in to access your dashboard</p>
         </div>
         {loginError && <p className="text-sm text-red-500">{loginError}</p>}
