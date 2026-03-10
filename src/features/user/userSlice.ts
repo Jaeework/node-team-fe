@@ -7,7 +7,6 @@ import type {
 } from "./user.types";
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
-import type { TokenResponse } from "@react-oauth/google";
 
 export const registerUser = createAsyncThunk<
   User,
@@ -112,13 +111,12 @@ export const loginWithToken = createAsyncThunk<
 
 export const loginWithGoogle = createAsyncThunk<
   User,
-  Omit<TokenResponse, "error" | "error_description" | "error_uri">,
+  string,
   { rejectValue: string }
->("user/loginWithGoogle", async (tokenResponse, { rejectWithValue }) => {
+>("user/loginWithGoogle", async (credential, { rejectWithValue }) => {
   try {
-    const access_token = tokenResponse.access_token;
     const res = await api.post<ApiResponse<LoginResponseData>>("/auth/google", {
-      credential: access_token,
+      credential: credential,
     });
 
     const data = res.data.data;

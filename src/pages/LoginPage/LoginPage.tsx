@@ -5,12 +5,20 @@ import { Link } from "react-router-dom";
 import Label from "../../components/ui/label/Label";
 import useLoginForm from "../../hooks/useLogin";
 import type { loginField } from "./LoginPage.types";
-import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
+import { useEffect, useRef, useState } from "react";
 
 const LoginPage = () => {
   const { loginError, handleChange, handleSubmit, handleGoogleLogin } =
     useLoginForm();
   const [showPassword, setShowPassword] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    if (containerRef.current) {
+      setWidth(containerRef.current.offsetWidth);
+    }
+  }, []);
   const handleShowPassword = () => setShowPassword((prev) => !prev);
 
   const fields: loginField[] = [
@@ -99,23 +107,12 @@ const LoginPage = () => {
             <span className="text-ink/50 bg-white px-2">Or continue with</span>
           </div>
         </div>
-        <div className="grid grid-cols-1">
-          <Button
-            variant="outline"
-            size="lg"
-            radius="lg"
-            isFullWidth
-            onClick={() => handleGoogleLogin()}
-            className="hover:bg-border/30 transition-colors"
-          >
-            <img
-              alt=""
-              className="size-4"
-              data-alt="Google logo icon"
-              src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s48-fcrop64=1,00000000ffffffff-rw"
-            />
-            <span className="text-sm font-semibold">Google</span>
-          </Button>
+        <div ref={containerRef} className="mb-2 grid grid-cols-1">
+          <GoogleLogin
+            width={width}
+            logo_alignment="center"
+            onSuccess={handleGoogleLogin}
+          />
         </div>
       </div>
     </div>

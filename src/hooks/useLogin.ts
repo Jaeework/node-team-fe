@@ -6,7 +6,6 @@ import {
   loginWithEmail,
   loginWithGoogle,
 } from "../features/user/userSlice";
-import { useGoogleLogin } from "@react-oauth/google";
 
 const useLoginForm = () => {
   const dispatch = useAppDispatch();
@@ -30,14 +29,18 @@ const useLoginForm = () => {
     }
   };
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      const result = await dispatch(loginWithGoogle(tokenResponse));
+  const handleGoogleLogin = async (credentialResponse: {
+    credential?: string;
+  }) => {
+    if (credentialResponse.credential) {
+      const result = await dispatch(
+        loginWithGoogle(credentialResponse.credential),
+      );
       if (loginWithGoogle.fulfilled.match(result)) {
         navigate(from, { replace: true });
       }
-    },
-  });
+    }
+  };
 
   return {
     formData,
