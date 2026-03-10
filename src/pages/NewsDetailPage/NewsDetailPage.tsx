@@ -16,7 +16,7 @@ const NewsDetailPage = () => {
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { currentNews, currentWords, currentAbbreviations, isLoading, error } =
+  const { currentNews, currentWords, currentAbbreviations, isLoading } =
     useAppSelector((state) => state.news);
 
   const handleSelect = (wordId: string) => {

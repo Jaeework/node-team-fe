@@ -46,11 +46,6 @@ export interface NewsDetailData {
   abbreviations: Abbreviation[];
 }
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-}
-
 export interface NewsState {
   currentNews: News | null;
   currentWords: Word[];
