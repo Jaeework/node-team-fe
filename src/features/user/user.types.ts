@@ -6,7 +6,7 @@ export interface User {
   level: UserLevel;
 }
 
-export interface LoginWithEmailData {
+export interface LoginResponseData {
   user: User;
   token: string;
 }

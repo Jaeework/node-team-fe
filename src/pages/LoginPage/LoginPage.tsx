@@ -7,7 +7,8 @@ import useLoginForm from "../../hooks/useLogin";
 import type { loginField } from "./LoginPage.types";
 
 const LoginPage = () => {
-  const { loginError, handleChange, handleSubmit } = useLoginForm();
+  const { loginError, handleChange, handleSubmit, handleGoogleLogin } =
+    useLoginForm();
   const fields: loginField[] = [
     {
       label: "Email Address",
@@ -85,13 +86,14 @@ const LoginPage = () => {
             size="lg"
             radius="lg"
             isFullWidth
+            onClick={() => handleGoogleLogin()}
             className="hover:bg-border/30 transition-colors"
           >
             <img
               alt=""
               className="size-4"
               data-alt="Google logo icon"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_WwNV9mGbFuKd0F8evGqE5kf8vsutitprmCB3Y6vVQWenCUsJ-B3qQeaaA_sZUoR3H_UvPSmuJ8CIfdgMymDex_l5LdOxAzXGU08d3uFo_TJmh8FVCuvcIzLFfceNswe0fe_WM1mFbvxpuzvhtgEcWDIW0jz1nNfhr02_DrW-wDnT_IOleYJFmxcesd7AcswoHRx0y6Hl1cfKANUIOFR5LM_6OfPK7_ktSDSu463Vc88ELcIU3foaUmpOa4CT07vgp4TVSO5USIs"
+              src="https://www.gstatic.com/marketing-cms/assets/images/d5/dc/cfe9ce8b4425b410b49b7f2dd3f3/g.webp=s48-fcrop64=1,00000000ffffffff-rw"
             />
             <span className="text-sm font-semibold">Google</span>
           </Button>

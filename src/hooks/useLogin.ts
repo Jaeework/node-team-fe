@@ -1,7 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../features/hooks";
 import { useState } from "react";
-import { clearErrors, loginWithEmail } from "../features/user/userSlice";
+import {
+  clearErrors,
+  loginWithEmail,
+  loginWithGoogle,
+} from "../features/user/userSlice";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const useLoginForm = () => {
   const dispatch = useAppDispatch();
@@ -25,7 +30,22 @@ const useLoginForm = () => {
     }
   };
 
-  return { formData, loginError, handleChange, handleSubmit };
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      const result = await dispatch(loginWithGoogle(tokenResponse));
+      if (loginWithGoogle.fulfilled.match(result)) {
+        navigate(from, { replace: true });
+      }
+    },
+  });
+
+  return {
+    formData,
+    loginError,
+    handleChange,
+    handleSubmit,
+    handleGoogleLogin,
+  };
 };
 
 export default useLoginForm;

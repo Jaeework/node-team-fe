@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type {
-  LoginWithEmailData,
+  LoginResponseData,
   User,
   UserLevel,
   UserState,
 } from "./user.types";
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
+import type { TokenResponse } from "@react-oauth/google";
 
 export const registerUser = createAsyncThunk<
   User,
@@ -66,13 +67,10 @@ export const loginWithEmail = createAsyncThunk<
     if (!email || !password) {
       return rejectWithValue("이메일과 패스워드를 입력해주세요.");
     }
-    const res = await api.post<ApiResponse<LoginWithEmailData>>(
-      "/auth/signin",
-      {
-        email,
-        password,
-      },
-    );
+    const res = await api.post<ApiResponse<LoginResponseData>>("/auth/signin", {
+      email,
+      password,
+    });
     const data = res.data.data;
 
     if (!data) {
@@ -104,6 +102,33 @@ export const loginWithToken = createAsyncThunk<
     }
 
     return data;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(error.message || "로그인 중 오류가 발생했습니다.");
+    }
+    return rejectWithValue("로그인 중 오류가 발생했습니다.");
+  }
+});
+
+export const loginWithGoogle = createAsyncThunk<
+  User,
+  Omit<TokenResponse, "error" | "error_description" | "error_uri">,
+  { rejectValue: string }
+>("user/loginWithGoogle", async (tokenResponse, { rejectWithValue }) => {
+  try {
+    const access_token = tokenResponse.access_token;
+    const res = await api.post<ApiResponse<LoginResponseData>>("/auth/google", {
+      credential: access_token,
+    });
+
+    const data = res.data.data;
+
+    if (!data) {
+      return rejectWithValue("로그인 중 오류가 발생했습니다.");
+    }
+
+    sessionStorage.setItem("token", data.token);
+    return data.user;
   } catch (error) {
     if (isApiError(error) && error.isUserError) {
       return rejectWithValue(error.message || "로그인 중 오류가 발생했습니다.");
@@ -185,6 +210,18 @@ const userSlice = createSlice({
       })
       .addCase(loginWithToken.rejected, (state) => {
         state.isInitialized = true;
+      })
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.loginError = null;
+        state.user = action.payload;
+      })
+      .addCase(loginWithGoogle.rejected, (state, action) => {
+        state.isLoading = false;
+        state.loginError = action.payload || "로그인 중 오류가 발생했습니다.";
       })
       .addCase(logOut.fulfilled, (state) => {
         state.user = null;
