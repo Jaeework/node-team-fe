@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
-import type { NewsDetailData, NewsState } from "./news.types";
+import type { News, NewsDetailData, NewsState } from "./news.types";
 
 // 뉴스 상세 정보 가져오기
 export const fetchNewsDetail = createAsyncThunk<
@@ -30,6 +30,28 @@ export const fetchNewsDetail = createAsyncThunk<
   }
 });
 
+export const fetchNewsList = createAsyncThunk<
+  News[],
+  void,
+  { rejectValue: string }
+>("news/fetchNewsList", async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.get<ApiResponse<News[]>>("/news");
+    const result = response.data?.data;
+
+    if (!result) {
+      return rejectWithValue("뉴스 목록을 가져올 수 없습니다.");
+    }
+
+    return result;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(error.message || "뉴스 목록 조회 실패");
+    }
+    return rejectWithValue("뉴스 목록 조회 실패");
+  }
+});
+
 export const saveUserWords = createAsyncThunk<
   void,
   { wordIds: string[] },
@@ -53,6 +75,7 @@ const initialState: NewsState = {
   currentAbbreviations: [],
   isLoading: false,
   error: null,
+  newsList: [],
 };
 
 const newsSlice = createSlice({
@@ -82,6 +105,17 @@ const newsSlice = createSlice({
         state.isLoading = false;
         state.error =
           action.payload || "뉴스 상세 정보를 가져오는 중 오류가 발생했습니다.";
+      })
+      .addCase(fetchNewsList.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchNewsList.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.newsList = action.payload;
+      })
+      .addCase(fetchNewsList.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "뉴스 목록 조회 실패";
       })
       .addCase(saveUserWords.pending, (state) => {
         state.isLoading = true;
