@@ -33,4 +33,5 @@ export const buttonVariants = {
   link: "text-primary underline-offset-4 hover:underline",
   background: "bg-background text-primary hover:bg-border",
   accent: "bg-accent text-ink hover:bg-accent/80",
+  danger: "bg-red-50 text-red-500 hover:bg-red-100",
 } as const;

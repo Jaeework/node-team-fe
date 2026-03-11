@@ -17,7 +17,7 @@ const initialState: WordState = {
 
 export const getMyWords = createAsyncThunk<
   UserWord[],
-  { q?: string; status?: string; sort?: string } | void,
+  { q?: string; status?: string; sort?: string; type?: string } | void,
   { rejectValue: string }
 >("word/getMyWords", async (params, { rejectWithValue }) => {
   try {
@@ -115,7 +115,9 @@ const wordSlice = createSlice({
       .addCase(updateWordStatus.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userWords = state.userWords.map((uw) =>
-          uw._id === action.payload._id ? action.payload : uw,
+          uw._id === action.payload._id
+            ? { ...uw, isDone: action.payload.isDone }
+            : uw,
         );
         state.error = null;
       })
