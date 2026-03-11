@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../features/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   clearErrors,
   loginWithEmail,
@@ -17,6 +17,10 @@ const useLoginForm = () => {
   const location = useLocation();
   const from = location.state?.from || "/";
   const loginError = useAppSelector((state) => state.user.loginError);
+
+  useEffect(() => {
+    dispatch(clearErrors());
+  }, [dispatch]);
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
