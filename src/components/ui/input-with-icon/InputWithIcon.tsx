@@ -17,7 +17,7 @@ const InputWithIcon = ({
       className={cn(
         "inline-flex w-full items-center gap-2 rounded-lg border px-2 shadow-xs",
         inputColors[color].wrapper,
-        !readOnly && "has-[:focus-within]:border-primary/30",
+        !readOnly && "has-focus-within:border-primary/30",
         readOnly && "bg-border/30 border-border",
         className,
       )}

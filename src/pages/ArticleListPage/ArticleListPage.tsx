@@ -2,24 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import ArticleCard from "../../components/article/ArticleCard";
 import FilterBar from "../../components/article/FilterBar";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { fetchNewsList } from "../../features/news/newsSlice";
+import { fetchArticles } from "../../features/news/newsSlice";
 import type { News } from "../../features/news/news.types";
 
 const ITEMS_PER_PAGE = 12;
 
 const ArticleListPage = () => {
   const dispatch = useAppDispatch();
-  const { newsList, isLoading, error } = useAppSelector((state) => state.news);
+  const {
+    articles: articleList,
+    isLoading,
+    error,
+  } = useAppSelector((state) => state.news);
 
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchNewsList());
+    dispatch(fetchArticles());
   }, [dispatch]);
 
-  const articles = useMemo(
+  const mappedArticles = useMemo(
     () =>
-      newsList.map((item: News) => ({
+      articleList.map((item: News) => ({
         id: item._id,
         title: item.title,
         level: item.level ?? "A1",
@@ -28,13 +32,13 @@ const ArticleListPage = () => {
           : "",
         image: item.image || "",
       })),
-    [newsList],
+    [articleList],
   );
 
-  const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(mappedArticles.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentArticles = articles.slice(startIndex, endIndex);
+  const currentArticles = mappedArticles.slice(startIndex, endIndex);
 
   return (
     <div className="min-h-screen bg-[#f3f3f3] px-6 py-8">

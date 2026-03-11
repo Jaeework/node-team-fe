@@ -1,7 +1,32 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
-import type { News, NewsDetailData, NewsState } from "./news.types";
+import type { NewsDetailData, NewsState, News } from "./news.types";
+
+//전체 뉴스 가져오기
+
+export const fetchArticles = createAsyncThunk<
+  News[],
+  void,
+  { rejectValue: string }
+>("news/fetchArticles", async (_, { rejectWithValue }) => {
+  try {
+    const response = await api.get<ApiResponse<News[]>>("/news");
+    const result = response.data?.data;
+
+    if (!result) {
+      return rejectWithValue("뉴스 정보를 찾을 수 없습니다.");
+    }
+    return result;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(
+        error.message || "뉴스 정보를 가져오는 중 오류가 발생했습니다.",
+      );
+    }
+    return rejectWithValue("뉴스 정보를 가져오는 중 오류가 발생했습니다.");
+  }
+});
 
 // 뉴스 상세 정보 가져오기
 export const fetchNewsDetail = createAsyncThunk<
@@ -30,28 +55,6 @@ export const fetchNewsDetail = createAsyncThunk<
   }
 });
 
-export const fetchNewsList = createAsyncThunk<
-  News[],
-  void,
-  { rejectValue: string }
->("news/fetchNewsList", async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get<ApiResponse<News[]>>("/news");
-    const result = response.data?.data;
-
-    if (!result) {
-      return rejectWithValue("뉴스 목록을 가져올 수 없습니다.");
-    }
-
-    return result;
-  } catch (error) {
-    if (isApiError(error) && error.isUserError) {
-      return rejectWithValue(error.message || "뉴스 목록 조회 실패");
-    }
-    return rejectWithValue("뉴스 목록 조회 실패");
-  }
-});
-
 export const saveUserWords = createAsyncThunk<
   void,
   { wordIds: string[] },
@@ -73,9 +76,9 @@ const initialState: NewsState = {
   currentNews: null,
   currentWords: [],
   currentAbbreviations: [],
+  articles: [],
   isLoading: false,
   error: null,
-  newsList: [],
 };
 
 const newsSlice = createSlice({
@@ -86,6 +89,8 @@ const newsSlice = createSlice({
       state.currentNews = null;
       state.currentWords = [];
       state.currentAbbreviations = [];
+      state.articles = [];
+      state.isLoading = false;
       state.error = null;
     },
   },
@@ -106,17 +111,6 @@ const newsSlice = createSlice({
         state.error =
           action.payload || "뉴스 상세 정보를 가져오는 중 오류가 발생했습니다.";
       })
-      .addCase(fetchNewsList.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchNewsList.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.newsList = action.payload;
-      })
-      .addCase(fetchNewsList.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload || "뉴스 목록 조회 실패";
-      })
       .addCase(saveUserWords.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -127,6 +121,19 @@ const newsSlice = createSlice({
       .addCase(saveUserWords.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "단어 저장 중 오류가 발생했습니다.";
+      })
+      .addCase(fetchArticles.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchArticles.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.articles = action.payload;
+      })
+      .addCase(fetchArticles.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error =
+          action.payload || "뉴스 정보를 가져오는 중 오류가 발생했습니다.";
       });
   },
 });
