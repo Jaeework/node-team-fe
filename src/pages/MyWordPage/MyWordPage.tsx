@@ -67,7 +67,7 @@ const MyWordPage = () => {
               size="lg"
               color="default"
               leftIcon={<Search className="size-5" />}
-              placeholder="단어 또는 뜻 검색"
+              placeholder="단어를 입력하세요."
               className="border-border bg-white px-4 py-1"
               value={headerProps.searchTerm}
               onChange={headerProps.onSearchChange}
