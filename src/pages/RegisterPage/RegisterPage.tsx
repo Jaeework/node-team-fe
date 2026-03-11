@@ -1,10 +1,10 @@
-import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import Button from "../../components/ui/button/Button";
 import { Link } from "react-router-dom";
 import Label from "../../components/ui/label/Label";
 import { REGISTER_FIELDS } from "./registerFields";
 import useRegister from "../../hooks/useRegister";
 import Input from "../../components/ui/input/Input";
+import InputWithMessage from "../../components/ui/input-with-message/InputWithMessage";
 
 const RegisterPage = () => {
   const {
@@ -37,8 +37,16 @@ const RegisterPage = () => {
           )}
           {REGISTER_FIELDS.map((field) => (
             <div key={field.id} className="flex flex-col gap-2">
-              <Label size="sm">{field.label}</Label>
-              <InputWithIcon {...field} onChange={handleChange} required />
+              <Label size="sm" htmlFor={field.name}>
+                {field.label}
+              </Label>
+              <InputWithMessage
+                {...field}
+                color="primary"
+                onChange={handleChange}
+                required
+                className="border-primary/10"
+              />
               {field.name === "secPassword" && passwordError && (
                 <p className="text-sm text-red-500">{passwordError}</p>
               )}

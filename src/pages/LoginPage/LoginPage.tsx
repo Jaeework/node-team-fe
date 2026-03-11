@@ -75,9 +75,10 @@ const LoginPage = () => {
                 </Label>
                 <InputWithMessage
                   {...field}
-                  color="paper"
+                  color="primary"
                   onChange={handleChange}
                   message={error}
+                  className="border-primary/10"
                 />
               </div>
             );
