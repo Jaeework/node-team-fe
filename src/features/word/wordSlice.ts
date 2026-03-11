@@ -62,7 +62,7 @@ export const updateWordStatus = createAsyncThunk<
         return rejectWithValue("업데이트할 데이터를 찾을 수 없습니다.");
 
       return data;
-    } catch (error: any) {
+    } catch (error) {
       if (isApiError(error) && error.isUserError) {
         return rejectWithValue(error.message || "상태 업데이트 실패");
       }
@@ -79,7 +79,7 @@ export const deleteWord = createAsyncThunk<
   try {
     await api.delete<ApiResponse<UserWord>>(`/user/words/${userWordId}`);
     return userWordId;
-  } catch (error: any) {
+  } catch (error) {
     if (isApiError(error) && error.isUserError) {
       return rejectWithValue(error.message || "삭제 실패");
     }
@@ -121,7 +121,7 @@ const wordSlice = createSlice({
       })
       .addCase(updateWordStatus.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload || "상태 업데이트에 실패했습니다.";
+        state.error = action.payload || "학습 상태 저장에 실패했습니다.";
       })
       .addCase(deleteWord.pending, (state) => {
         state.isLoading = true;
