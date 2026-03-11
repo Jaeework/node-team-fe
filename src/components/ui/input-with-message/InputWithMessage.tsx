@@ -1,10 +1,11 @@
 import { cn } from "../../../lib/utils";
 import InputWithIcon from "../input-with-icon/InputWithIcon";
+import { inputWithMessageVariants } from "./InputWithMessage.tokens";
 import type { InputWithMessageProps } from "./InputWithMessage.types";
 
 const InputWithMessage = ({
   message,
-  variant = "error",
+  variant = "default",
   color,
   ...props
 }: InputWithMessageProps) => {
@@ -17,8 +18,7 @@ const InputWithMessage = ({
         <p
           className={cn(
             "absolute -bottom-5 left-2 text-sm",
-            variant === "error" && "text-red-500",
-            variant === "success" && "text-green-600",
+            inputWithMessageVariants[variant],
           )}
         >
           {message}
