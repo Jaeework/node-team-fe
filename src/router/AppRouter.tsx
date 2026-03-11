@@ -8,6 +8,8 @@ import LoginPage from "../pages/LoginPage/LoginPage";
 import PrivateRoute from "./PrivateRoute";
 import GuestOnlyRoute from "./GuestOnlyRoute";
 import MyWordPage from "../pages/MyWordPage/MyWordPage";
+import MyPage from "../pages/MyPage/MyPage";
+import MyArticlePage from "../pages/MyArticlePage/MyArticlePage";
 
 const AppRouter = () => {
   return (
@@ -16,11 +18,14 @@ const AppRouter = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/articles/:id" element={<NewsDetailPage />} />
         <Route path="/articles" element={<ArticleListPage />} />
+        <Route path="/me">
+          <Route index element={<MyPage />} />
+          <Route path="vocabulary" element={<MyWordPage />} />
+          <Route path="articles" element={<MyArticlePage />} />
+        </Route>
       </Route>
       <Route element={<PrivateRoute />}>
-        <Route element={<AppLayout />}>
-          <Route path="/me" element={<MyWordPage />} />
-        </Route>
+        <Route element={<AppLayout />}></Route>
       </Route>
       <Route element={<GuestOnlyRoute />}>
         <Route element={<AppLayout />}>

@@ -1,16 +1,4 @@
-export type NewsItem = {
-  _id: string;
-  title: string;
-};
-
-export type Word = {
-  _id: string;
-  text: string;
-  meaning?: string;
-  example?: string;
-  example_meaning?: string;
-  type: "word" | "idiom" | "abbreviation";
-};
+import type { Word, NewsItem } from "../../../types/word.types";
 
 export type WordCardProps = {
   word: Word;
