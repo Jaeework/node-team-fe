@@ -5,14 +5,6 @@ import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { fetchNewsList } from "../../features/news/newsSlice";
 import type { News } from "../../features/news/news.types";
 
-type Article = {
-  id: string;
-  title: string;
-  level: string;
-  date: string;
-  image?: string;
-};
-
 const ITEMS_PER_PAGE = 12;
 
 const ArticleListPage = () => {
@@ -25,15 +17,19 @@ const ArticleListPage = () => {
     dispatch(fetchNewsList());
   }, [dispatch]);
 
-  const articles: Article[] = useMemo(() => {
-    return newsList.map((item: News) => ({
-      id: item._id,
-      title: item.title,
-      level: item.level ?? "A1",
-      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "",
-      image: item.image || "",
-    }));
-  }, [newsList]);
+  const articles = useMemo(
+    () =>
+      newsList.map((item: News) => ({
+        id: item._id,
+        title: item.title,
+        level: item.level ?? "A1",
+        date: item.createdAt
+          ? new Date(item.createdAt).toLocaleDateString()
+          : "",
+        image: item.image || "",
+      })),
+    [newsList],
+  );
 
   const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;

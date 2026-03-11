@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import type { ArticleCardProps } from "./ArticleCard.types";
+import Badge from "../ui/Badge/Badge";
+import logo from "../../assets/logo.png";
 
 const ArticleCard = ({ id, title, level, date, image }: ArticleCardProps) => {
   return (
@@ -11,14 +13,20 @@ const ArticleCard = ({ id, title, level, date, image }: ArticleCardProps) => {
         {image ? (
           <img src={image} alt={title} className="h-full w-full object-cover" />
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-gray-500">
-            이미지
+          <div className="flex h-full items-center justify-center bg-slate-50 p-4">
+            <img
+              src={logo}
+              alt="NewsBite logo"
+              className="max-h-full max-w-full object-contain"
+            />
           </div>
         )}
       </div>
 
       <div className="space-y-1 p-3">
-        <p className="text-xs font-semibold text-gray-500">{level}</p>
+        <Badge size="xs" color={level as "A2" | "B1" | "B2" | "C1"}>
+          {level}
+        </Badge>
         <h3 className="line-clamp-2 text-sm font-semibold text-gray-900">
           {title}
         </h3>
