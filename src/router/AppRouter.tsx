@@ -16,6 +16,7 @@ const AppRouter = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/articles/:id" element={<NewsDetailPage />} />
         <Route path="/articles" element={<ArticleListPage />} />
+        {/* <Route path="/articles/:id" element={<다훈님 기사페이지/>} /> */}
       </Route>
       <Route element={<PrivateRoute />}>
         <Route element={<AppLayout />}>
