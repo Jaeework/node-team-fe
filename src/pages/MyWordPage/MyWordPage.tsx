@@ -8,6 +8,7 @@ import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import Button from "../../components/ui/button/Button";
 import GridLayout from "./components/GridLayout";
 import WordCard from "../../components/ui/WordCard/WordCard";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 const MyWordPage = () => {
   const {
@@ -116,7 +117,13 @@ const MyWordPage = () => {
       <main className="mx-auto max-w-5xl p-6 pt-0">
         {error && <div className="py-10 text-center text-red-500">{error}</div>}
 
-        {userWords.length > 0 ? (
+        {isLoading && !error && (
+          <div className="flex h-60 flex-col items-center justify-center gap-4">
+            <LoadingSpinner size="md" />
+          </div>
+        )}
+
+        {!isLoading && !error && userWords.length > 0 && (
           <GridLayout>
             {userWords.map((userWord) => (
               <WordCard
@@ -129,12 +136,11 @@ const MyWordPage = () => {
               />
             ))}
           </GridLayout>
-        ) : (
-          !isLoading && (
-            <div className="border-border text-ink/50 flex h-40 items-center justify-center rounded-xl border-2 border-dashed font-medium">
-              표시할 단어가 없습니다.
-            </div>
-          )
+        )}
+        {!isLoading && !error && userWords.length === 0 && (
+          <div className="border-border text-ink/50 flex h-40 items-center justify-center rounded-xl border-2 border-dashed font-medium">
+            표시할 단어가 없습니다.
+          </div>
         )}
       </main>
     </div>
