@@ -50,6 +50,7 @@ export interface NewsState {
   currentNews: News | null;
   currentWords: Word[];
   currentAbbreviations: Abbreviation[];
+  articles: News[];
   isLoading: boolean;
   error: string | null;
 }

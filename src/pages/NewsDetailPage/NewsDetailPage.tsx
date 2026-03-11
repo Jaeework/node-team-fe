@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import Button from "../../components/ui/button/Button";
+import Badge from "../../components/ui/Badge/Badge";
 import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
 import WordCard from "../../components/ui/WordCard/WordCard";
@@ -61,11 +62,20 @@ const NewsDetailPage = () => {
           {/* 기사 정보 섹션(타이틀 위에) */}
           <div className="shrink-0">
             <section className="mb-2 text-sm text-gray-500">
-              {currentNews.level} / 발행 날짜:{" "}
+              <Badge size="sm" color={currentNews.level} radius="full">
+                {"레벨 "}
+                {currentNews.level}
+                {" (Level "}
+                {currentNews.level}
+                {")"}
+              </Badge>
+              발행 날짜:{" "}
               {new Date(currentNews.published_at).toLocaleDateString()} / 출처:{" "}
               {currentNews.source} / 아이디 : {id}
             </section>
             <div className="absolute top-7 right-7 z-10 md:top-10 md:right-10">
+              {/* 빈책 -> 파란색으로 변경 alert표시 스낵바? */}
+              {/* 유저뉴스 저장하는 버튼임.  */}
               <Button
                 size="icon"
                 variant="outline"
