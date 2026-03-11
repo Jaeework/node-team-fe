@@ -10,6 +10,7 @@ import { useEffect, useState, useMemo, useRef } from "react";
 const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { user } = useAppSelector((state) => state.user);
 
   const dispatch = useAppDispatch();
   const [filter, setFilter] = useState<"word" | "idiom">("word");
@@ -155,43 +156,52 @@ const NewsDetailPage = () => {
               ref={scrollRef}
               className="hover:[&::-webkit-scrollbar-thumb]:bg-primary/30 flex flex-col items-start space-y-4 overflow-y-auto bg-gray-50/50 p-4 pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-track]:bg-transparent"
             >
-              {filteredWords.map((word, index) => (
-                <div key={index} className="w-full">
-                  <WordCard
-                    word={word}
-                    isDone={word.isDone}
-                    isSelected={selectedIds.includes(word.id)}
-                    onSelect={() => {
-                      handleSelect(word.id);
-                    }}
-                  />
-                </div>
-              ))}
+              {!user
+                ? filteredWords.map((word, index) => (
+                    <div key={index} className="w-full">
+                      <WordCard word={word} />
+                    </div>
+                  ))
+                : filteredWords.map((word, index) => (
+                    <div key={index} className="w-full">
+                      <WordCard
+                        word={word}
+                        isSelected={selectedIds.includes(word.id)}
+                        onSelect={() => {
+                          handleSelect(word.id);
+                        }}
+                      />
+                    </div>
+                  ))}
             </div>
-            <Button
-              size="xl"
-              variant="primary"
-              radius="md"
-              className="mx-4 mt-4 mb-2 w-[calc(100%-2rem)] pt-3 pb-3 font-medium"
-              disabled={selectedIds.length === 0}
-              onClick={() => {
-                dispatch(saveUserWords({ wordIds: selectedIds }))
-                  .unwrap()
-                  .then(() => {
-                    alert("단어가 저장되었습니다!");
-                    setSelectedIds([]);
-                  })
-                  .catch((err) => {
-                    alert(
-                      err || "단어 저장에 실패했습니다. 다시 시도해주세요.",
-                    );
-                  });
-              }}
-            >
-              {selectedIds.length > 0
-                ? `${selectedIds.length}개의 단어 저장하기`
-                : "저장할 단어를 선택해 주세요"}
-            </Button>
+            {user ? (
+              <Button
+                size="xl"
+                variant="primary"
+                radius="md"
+                className="mx-4 mt-4 mb-2 w-[calc(100%-2rem)] pt-3 pb-3 font-medium"
+                disabled={selectedIds.length === 0}
+                onClick={() => {
+                  dispatch(saveUserWords({ wordIds: selectedIds }))
+                    .unwrap()
+                    .then(() => {
+                      alert("단어가 저장되었습니다!");
+                      setSelectedIds([]);
+                    })
+                    .catch((err) => {
+                      alert(
+                        err || "단어 저장에 실패했습니다. 다시 시도해주세요.",
+                      );
+                    });
+                }}
+              >
+                {selectedIds.length > 0
+                  ? `${selectedIds.length}개의 단어 저장하기`
+                  : "저장할 단어를 선택해 주세요"}
+              </Button>
+            ) : (
+              <></>
+            )}
           </section>
         </aside>
       </div>
