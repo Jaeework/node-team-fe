@@ -5,11 +5,12 @@ import { REGISTER_FIELDS } from "./registerFields";
 import useRegister from "../../hooks/useRegister";
 import Input from "../../components/ui/input/Input";
 import InputWithMessage from "../../components/ui/input-with-message/InputWithMessage";
+import type { RegisterFormData } from "./RegisterPage.types";
 
 const RegisterPage = () => {
   const {
     formData,
-    passwordError,
+    fieldStates,
     policy,
     policyError,
     registrationError,
@@ -29,29 +30,31 @@ const RegisterPage = () => {
             Join thousands of learners today
           </p>
         </div>
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="space-y-7" onSubmit={handleSubmit}>
           {registrationError && (
             <p className="text-center text-sm text-red-500">
               {registrationError}
             </p>
           )}
-          {REGISTER_FIELDS.map((field) => (
-            <div key={field.id} className="flex flex-col gap-2">
-              <Label size="sm" htmlFor={field.name}>
-                {field.label}
-              </Label>
-              <InputWithMessage
-                {...field}
-                color="primary"
-                onChange={handleChange}
-                required
-                className="border-primary/10"
-              />
-              {field.name === "secPassword" && passwordError && (
-                <p className="text-sm text-red-500">{passwordError}</p>
-              )}
-            </div>
-          ))}
+          {REGISTER_FIELDS.map((field) => {
+            const fieldName = field.name as keyof RegisterFormData;
+            return (
+              <div key={field.id} className="flex flex-col">
+                <Label size="sm" htmlFor={field.name}>
+                  {field.label}
+                </Label>
+                <InputWithMessage
+                  {...field}
+                  color="primary"
+                  message={fieldStates[fieldName]?.message}
+                  variant={fieldStates[fieldName]?.variant}
+                  onChange={handleChange}
+                  required
+                  className="border-primary/10"
+                />
+              </div>
+            );
+          })}
 
           <div className="flex flex-col gap-3 pt-2">
             <label className="text-ink-700 text-sm leading-normal font-semibold">

@@ -25,7 +25,6 @@ export const registerUser = createAsyncThunk<
     { rejectWithValue },
   ) => {
     try {
-      // 유효성 검사는 나중에 컴포넌트 레벨로 옮길 예정
       if (!nickname || !email || !password) {
         return rejectWithValue("모든 필드를 입력해주세요.");
       }
