@@ -11,7 +11,7 @@ import { useState } from "react";
 const LoginPage = () => {
   const {
     loginError,
-    fieldErrors,
+    fieldStates,
     handleChange,
     handleSubmit,
     handleGoogleLogin,
@@ -67,7 +67,6 @@ const LoginPage = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           {fields.map((field) => {
             const fieldName = field.name as keyof LoginFormData;
-            const error = fieldErrors[fieldName];
             return (
               <div key={field.id}>
                 <Label size="sm" htmlFor={field.name}>
@@ -77,7 +76,7 @@ const LoginPage = () => {
                   {...field}
                   color="primary"
                   onChange={handleChange}
-                  message={error}
+                  messages={fieldStates[fieldName]}
                   className="border-primary/10"
                 />
               </div>
