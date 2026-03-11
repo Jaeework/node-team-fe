@@ -6,6 +6,8 @@ export type ValidationRule = {
   hideOnSuccess?: boolean;
 };
 
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const FIELD_VALIDATIONS: Partial<
   Record<keyof RegisterFormData, ValidationRule[]>
 > = {
@@ -21,7 +23,7 @@ export const FIELD_VALIDATIONS: Partial<
   email: [
     {
       message: "올바른 이메일 형식이 아닙니다",
-      validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      validate: (value) => EMAIL_REGEX.test(value),
       hideOnSuccess: true,
     },
   ],

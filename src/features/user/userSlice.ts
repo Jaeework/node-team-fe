@@ -8,6 +8,25 @@ import type {
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
 
+export const checkDuplicateEmail = createAsyncThunk<
+  boolean,
+  string,
+  { rejectValue: string }
+>("user/checkDuplicateEmail", async (email, { rejectWithValue }) => {
+  try {
+    const res = await api.get<ApiResponse<boolean>>("/auth/check-email", {
+      params: { email },
+    });
+
+    return res.data.data ?? false;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(error.message || "이메일을 확인하지 못했습니다.");
+    }
+    return rejectWithValue("이메일 확인 중 오류가 발생했습니다");
+  }
+});
+
 export const registerUser = createAsyncThunk<
   User,
   {
@@ -154,6 +173,7 @@ export const logOut = createAsyncThunk<void, void, { rejectValue: string }>(
 const initialState: UserState = {
   user: null,
   isLoading: false,
+  isCheckingEmail: false,
   isInitialized: false,
   registrationError: null,
   loginError: null,
@@ -177,6 +197,15 @@ const userSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase(checkDuplicateEmail.pending, (state) => {
+        state.isCheckingEmail = true;
+      })
+      .addCase(checkDuplicateEmail.fulfilled, (state) => {
+        state.isCheckingEmail = false;
+      })
+      .addCase(checkDuplicateEmail.rejected, (state) => {
+        state.isCheckingEmail = false;
+      })
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
       })

@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../features/hooks";
-import { clearErrors, registerUser } from "../features/user/userSlice";
+import {
+  checkDuplicateEmail,
+  clearErrors,
+  registerUser,
+} from "../features/user/userSlice";
 import type { RegisterFormData } from "../pages/RegisterPage/RegisterPage.types";
 import type { ValidationMessage } from "../components/ui/input-with-message/InputWithMessage.types";
-import { FIELD_VALIDATIONS } from "../pages/RegisterPage/constants/fieldValidations";
+import {
+  EMAIL_REGEX,
+  FIELD_VALIDATIONS,
+} from "../pages/RegisterPage/constants/fieldValidations";
 
 type FieldStates = Partial<Record<keyof RegisterFormData, ValidationMessage[]>>;
 
@@ -51,6 +58,57 @@ const useRegister = () => {
   );
   const [policy, setPolicy] = useState(false);
   const [policyError, setPolicyError] = useState("");
+  const [isEmailChecked, setIsEmailChecked] = useState(false);
+
+  const handleCheckEmail = async () => {
+    const email = formData.email;
+
+    if (!email) {
+      setFieldStates((prev) => ({
+        ...prev,
+        email: [{ message: "이메일을 입력해주세요.", variant: "error" }],
+      }));
+      return;
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      setFieldStates((prev) => ({
+        ...prev,
+        email: [{ message: "올바른 이메일 형식이 아닙니다", variant: "error" }],
+      }));
+      return;
+    }
+
+    const result = await dispatch(checkDuplicateEmail(email));
+    if (checkDuplicateEmail.rejected.match(result)) {
+      setFieldStates((prev) => ({
+        ...prev,
+        email: [
+          {
+            message: result.payload ?? "이메일 확인 중 오류가 발생했습니다",
+            variant: "error",
+          },
+        ],
+      }));
+      return;
+    }
+
+    if (checkDuplicateEmail.fulfilled.match(result)) {
+      const isDuplicate = result.payload;
+      setIsEmailChecked(!isDuplicate);
+
+      setFieldStates((prev) => ({
+        ...prev,
+        email: [
+          {
+            message: isDuplicate
+              ? "이미 사용 중인 이메일입니다"
+              : "사용 가능한 이메일입니다",
+            variant: isDuplicate ? "error" : "success",
+          },
+        ],
+      }));
+    }
+  };
 
   const validateField = (name: keyof RegisterFormData, value: string) => {
     const rules = FIELD_VALIDATIONS[name];
@@ -86,11 +144,35 @@ const useRegister = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     validateField(name as keyof RegisterFormData, value);
+
+    if (name === "email") {
+      setIsEmailChecked(false);
+    }
   };
 
   const handlePolicyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPolicy(e.target.checked);
     setPolicyError("");
+  };
+
+  const validateRequiredFields = (
+    fieldsToValidate: (keyof RegisterFormData)[],
+  ): boolean => {
+    let isValid = true;
+    for (const name of fieldsToValidate) {
+      const value = formData[name];
+
+      if (!value.trim()) {
+        setFieldStates((prev) => ({
+          ...prev,
+          [name]: [{ message: "필수 입력 항목입니다", variant: "error" }],
+        }));
+
+        isValid = false;
+        continue;
+      }
+    }
+    return isValid;
   };
 
   const validateForm = (): boolean => {
@@ -104,16 +186,21 @@ const useRegister = () => {
       "secPassword",
     ];
 
+    const isRequiredFieldsValid = validateRequiredFields(fieldsToValidate);
+    if (!isRequiredFieldsValid) return false;
+
+    if (!isEmailChecked) {
+      setFieldStates((prev) => ({
+        ...prev,
+        email: [
+          { message: "이메일 중복 확인이 필요합니다.", variant: "error" },
+        ],
+      }));
+      return false;
+    }
+
     for (const name of fieldsToValidate) {
       const value = formData[name];
-
-      if (!value.trim()) {
-        newFieldStates[name] = [
-          { message: "필수 입력 항목입니다", variant: "error" },
-        ];
-        isValid = false;
-        continue;
-      }
 
       const rules = FIELD_VALIDATIONS[name];
       if (!rules) continue;
@@ -157,9 +244,11 @@ const useRegister = () => {
   return {
     formData,
     fieldStates,
+    isEmailChecked,
     policy,
     policyError,
     registrationError,
+    handleCheckEmail,
     handleChange,
     handlePolicyChange,
     handleSubmit,

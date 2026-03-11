@@ -6,14 +6,18 @@ import useRegister from "../../hooks/useRegister";
 import Input from "../../components/ui/input/Input";
 import InputWithMessage from "../../components/ui/input-with-message/InputWithMessage";
 import type { RegisterFormData } from "./RegisterPage.types";
+import { Check } from "lucide-react";
+import { cn } from "../../lib/utils";
 
 const RegisterPage = () => {
   const {
     formData,
     fieldStates,
+    isEmailChecked,
     policy,
     policyError,
     registrationError,
+    handleCheckEmail,
     handleChange,
     handlePolicyChange,
     handleSubmit,
@@ -43,13 +47,31 @@ const RegisterPage = () => {
                 <Label size="sm" htmlFor={field.name}>
                   {field.label}
                 </Label>
-                <InputWithMessage
-                  {...field}
-                  color="primary"
-                  messages={fieldStates[fieldName]}
-                  onChange={handleChange}
-                  className="border-primary/10"
-                />
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <InputWithMessage
+                      {...field}
+                      color="primary"
+                      messages={fieldStates[fieldName]}
+                      onChange={handleChange}
+                      className="border-primary/10"
+                    />
+                  </div>
+                  {field.name === "email" && (
+                    <Button
+                      type="button"
+                      variant="border"
+                      size="icon"
+                      onClick={handleCheckEmail}
+                      className={cn(
+                        `shrink-0 text-gray-300`,
+                        isEmailChecked && "text-green-500",
+                      )}
+                    >
+                      <Check size={16} />
+                    </Button>
+                  )}
+                </div>
               </div>
             );
           })}
