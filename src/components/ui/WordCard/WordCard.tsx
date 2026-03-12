@@ -11,6 +11,9 @@ import {
   CheckCircle,
 } from "lucide-react";
 import Button from "../button/Button";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import Badge from "../Badge/Badge";
 
 const WordCard = ({
   word,
@@ -22,6 +25,25 @@ const WordCard = ({
   const { text, meaning, example, example_meaning, type } = word;
 
   const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    window.speechSynthesis.getVoices();
+  }, []);
+
+  const speakWord = (text: string) => {
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find((v) => v.lang === "en-US");
+
+    if (voice) utterance.voice = voice;
+
+    window.speechSynthesis.speak(utterance);
+  };
 
   return (
     <div className="border-border flex h-full flex-col rounded-xl border bg-white p-5 shadow-sm transition-all hover:shadow-md">
@@ -36,19 +58,7 @@ const WordCard = ({
               variant="ghost"
               size="xs"
               className="rounded-full p-1.5 text-gray-400"
-              onClick={() => {
-                // 1. 음성 합성 객체 생성
-                const utterance = new SpeechSynthesisUtterance(text);
-
-                // 2. 언어 설정 (영어 뉴스이므로 영어 설정)
-                utterance.lang = "en-US";
-
-                // 3. 속도나 피치 조절 가능
-                utterance.rate = 0.8; // 속도 (0.1 ~ 10)
-
-                // 4. 재생
-                window.speechSynthesis.speak(utterance);
-              }}
+              onClick={() => speakWord(text)}
             >
               <Volume2 className="h-5 w-5" />
             </Button>
@@ -57,18 +67,17 @@ const WordCard = ({
           {/* 상단 뱃지들 */}
           <div className="flex flex-wrap items-center gap-2">
             {type && type !== "abbreviation" && (
-              <span className="bg-paper text-primary border-primary/20 rounded-md border px-2 py-1 text-xs font-semibold tracking-wide capitalize">
+              <Badge size="xs" color={type} radius="md">
                 {type}
-              </span>
+              </Badge>
             )}
 
             {isDone !== undefined && (
-              <span
-                className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                  isDone
-                    ? "bg-primary/10 text-primary border-primary/20 border"
-                    : "bg-paper border-border border text-gray-500"
-                }`}
+              <Badge
+                size="sm"
+                color={isDone ? "mastered" : "learning"}
+                radius="full"
+                className="flex items-center gap-1.5"
               >
                 {isDone ? (
                   <>
@@ -79,7 +88,7 @@ const WordCard = ({
                     <BookOpen className="h-3.5 w-3.5" /> 학습 중
                   </>
                 )}
-              </span>
+              </Badge>
             )}
           </div>
         </div>
@@ -137,16 +146,19 @@ const WordCard = ({
 
             {isExpanded && (
               <div className="border-border bg-border absolute top-full left-0 z-50 mt-3 flex w-full flex-col gap-2 rounded-lg border p-3 text-sm shadow-xl">
-                {newsList.map((news) => (
-                  <a
-                    key={news._id}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-ink hover:text-primary cursor-pointer truncate transition-colors"
-                  >
-                    • {news.title}
-                  </a>
-                ))}
+                {newsList.map((news) => {
+                  const articleId = news.id || news._id;
+
+                  return (
+                    <Link
+                      key={articleId}
+                      to={`/articles/${articleId}`}
+                      className="text-ink hover:text-primary cursor-pointer truncate transition-colors"
+                    >
+                      • {news.title}
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>

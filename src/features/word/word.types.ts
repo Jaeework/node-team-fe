@@ -1,7 +1,8 @@
 export type WordType = "word" | "idiom" | "abbreviation";
 
 export interface NewsItem {
-  _id: string;
+  _id?: string;
+  id?: string;
   title: string;
 }
 
@@ -18,9 +19,9 @@ export interface Word {
   example: string;
   example_meaning: string;
   type: WordType;
-  news?: NewsLink[]; //virtual field
   createdAt: string;
   updatedAt: string;
+  news?: NewsLink[]; //virtual field
 }
 
 export interface UserWord {

@@ -1,23 +1,35 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../../lib/axios";
-import { isApiError, type ApiResponse } from "../../types/api.types";
-import type { UserWord } from "../../types/word.types"; // WordState 타입도 types에 있다고 가정
+import {
+  isApiError,
+  type ApiResponse,
+  type Pagination,
+} from "../../types/api.types";
+import type { UserWord } from "./word.types"; // WordState 타입도 types에 있다고 가정
 
 interface WordState {
   userWords: UserWord[];
+  pagination: Pagination | null;
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: WordState = {
   userWords: [],
+  pagination: null,
   isLoading: false,
   error: null,
 };
 
 export const getMyWords = createAsyncThunk<
-  UserWord[],
-  { q?: string; status?: string; sort?: string; type?: string } | void,
+  { data: UserWord[]; pagination: Pagination },
+  {
+    q?: string;
+    status?: string;
+    sort?: string;
+    type?: string;
+    page?: number;
+  } | void,
   { rejectValue: string }
 >("word/getMyWords", async (params, { rejectWithValue }) => {
   try {
@@ -26,18 +38,23 @@ export const getMyWords = createAsyncThunk<
     });
 
     const data = res.data.data;
+    const pagination = res.data.pagination;
 
-    if (!data) {
+    if (!data || !pagination) {
       return rejectWithValue("단어장 데이터를 불러올 수 없습니다.");
     }
 
-    return data;
+    return {
+      data,
+      pagination,
+    };
   } catch (error) {
     if (isApiError(error) && error.isUserError) {
       return rejectWithValue(
         error.message || "단어장을 불러오는 중 오류가 발생했습니다.",
       );
     }
+
     return rejectWithValue("단어장을 불러오는 중 오류가 발생했습니다.");
   }
 });
@@ -102,7 +119,8 @@ const wordSlice = createSlice({
       })
       .addCase(getMyWords.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userWords = action.payload;
+        state.userWords = action.payload.data;
+        state.pagination = action.payload.pagination;
         state.error = null;
       })
       .addCase(getMyWords.rejected, (state, action) => {
@@ -133,6 +151,7 @@ const wordSlice = createSlice({
         state.userWords = state.userWords.filter(
           (uw) => uw._id !== action.payload,
         );
+
         state.error = null;
       })
       .addCase(deleteWord.rejected, (state, action) => {

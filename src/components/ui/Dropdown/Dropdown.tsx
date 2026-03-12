@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { cn } from "../../../../lib/utils";
-import Button from "../../../../components/ui/button/Button";
+import { cn } from "../../../lib/utils";
+import Button from "../button/Button";
 import type { DropdownProps } from "./Dropdown.types";
 import { ChevronDown } from "lucide-react";
 
-// Tailwind Purge 방지용 안전한 하단 둥글기 매핑
 const bottomRadiusMap: Record<string, string> = {
   none: "rounded-b-none",
   sm: "rounded-b-sm",
@@ -41,7 +40,11 @@ const Dropdown = ({
 
   return (
     <div
-      className={cn("relative inline-flex flex-col", isOpen ? "z-110" : "z-10")}
+      className={cn(
+        "relative inline-flex w-fit flex-col",
+        isOpen ? "z-110" : "z-10",
+        className,
+      )}
       ref={dropdownRef}
     >
       <Button
@@ -49,17 +52,18 @@ const Dropdown = ({
         radius={radius}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "z-10 bg-white px-4 py-2 transition-none hover:bg-white",
-
+          "items-center justify-between bg-white px-4 py-2 transition-none hover:bg-white",
+          "relative z-20 min-w-full",
           isOpen && "rounded-b-none border-b-transparent",
-          className,
         )}
       >
-        {leftIcon && <span className="mr-1.5">{leftIcon}</span>}
-        {label}
+        <div className="text-primary mr-4 flex items-center whitespace-nowrap">
+          {leftIcon && <span className="mr-1.5">{leftIcon}</span>}
+          <span>{label}</span>
+        </div>
         <ChevronDown
           className={cn(
-            "ml-1.5 size-4 transition-transform duration-300",
+            "size-4 shrink-0 transition-transform duration-300",
             isOpen && "rotate-180",
           )}
         />
@@ -67,12 +71,12 @@ const Dropdown = ({
 
       <div
         className={cn(
-          "border-border absolute top-[calc(100%-1px)] left-0 z-110 border bg-white shadow-lg transition-all duration-300 ease-in-out",
-          "w-max min-w-full overflow-hidden",
+          "border-border absolute top-full left-0 z-10 -mt-px border bg-white shadow-lg transition-all duration-200",
+          "w-full min-w-max overflow-hidden",
           bottomRadiusMap[radius] || "rounded-b-lg",
           isOpen
-            ? "max-h-75 border-t-0 opacity-100"
-            : "max-h-0 border-transparent opacity-0",
+            ? "max-h-72 opacity-100"
+            : "pointer-events-none max-h-0 border-transparent opacity-0",
         )}
       >
         <div className="flex flex-col py-1">
@@ -84,7 +88,7 @@ const Dropdown = ({
                 setIsOpen(false);
               }}
               className={cn(
-                "text-ink hover:bg-paper/50 flex w-full items-center px-4 py-2.5 text-left text-sm transition-colors",
+                "text-ink hover:bg-primary/15 w-full px-4 py-2.5 text-left text-xs transition-colors",
                 "whitespace-nowrap",
               )}
             >

@@ -1,4 +1,4 @@
-import type { Word, NewsItem } from "../../../types/word.types";
+import type { Word, NewsItem } from "../../../features/word/word.types";
 
 export type WordCardProps = {
   word: Word;

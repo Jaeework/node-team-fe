@@ -1,6 +1,14 @@
+export interface Pagination {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T | null;
+  pagination?: Pagination;
 }
 
 export interface ApiError {

@@ -17,6 +17,8 @@ export const badgeColors = {
   C1: "bg-red-100 text-red-800 border-red-200",
   word: "bg-blue-50 text-blue-700 border-blue-200",
   idiom: "bg-orange-50 text-orange-700 border-orange-200",
+  learning: "bg-amber-100 text-amber-800 border-amber-200",
+  mastered: "bg-green-100 text-green-800 border-green-200",
   primary: "bg-white text-slate-900 border-slate-200",
   outline: "bg-transparent text-slate-600 border-slate-300",
 } as const;

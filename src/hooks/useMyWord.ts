@@ -9,7 +9,12 @@ import type { WordFilterType } from "../pages/MyWordPage/components/WordTypeTogg
 
 export const useMyWord = () => {
   const dispatch = useAppDispatch();
-  const { userWords, isLoading, error } = useAppSelector((state) => state.word);
+
+  const { userWords, pagination, isLoading, error } = useAppSelector(
+    (state) => state.word,
+  );
+
+  const [page, setPage] = useState(1);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState<WordFilterType>("All");
@@ -33,43 +38,73 @@ export const useMyWord = () => {
     );
   }, [filteredWords, selectedIds]);
 
-  const fetchWords = useCallback(() => {
-    const statusParam =
-      selectedStatus === "학습 완료"
-        ? "done"
-        : selectedStatus === "학습 중"
-          ? "doing"
-          : undefined;
-    const typeParam =
-      selectedType === "Word"
-        ? "word"
-        : selectedType === "Idiom"
-          ? "idiom"
-          : undefined;
-    const sortParam =
-      selectedSort === "Latest"
-        ? "recent"
-        : selectedSort === "A to Z"
-          ? "alpha"
-          : selectedSort === "Oldest"
-            ? "oldest"
-            : "recent";
+  const fetchWords = useCallback(
+    (pageOverride?: number) => {
+      const statusParam =
+        selectedStatus === "학습 완료"
+          ? "done"
+          : selectedStatus === "학습 중"
+            ? "doing"
+            : undefined;
 
-    dispatch(
-      getMyWords({
-        q: searchTerm || undefined,
-        status: statusParam,
-        sort: sortParam,
-        type: typeParam,
-      }),
-    );
-  }, [dispatch, searchTerm, selectedStatus, selectedSort, selectedType]);
+      const typeParam =
+        selectedType === "Word"
+          ? "word"
+          : selectedType === "Idiom"
+            ? "idiom"
+            : undefined;
+
+      const sortParam =
+        selectedSort === "Latest"
+          ? "recent"
+          : selectedSort === "A to Z"
+            ? "alpha"
+            : selectedSort === "Oldest"
+              ? "oldest"
+              : "recent";
+
+      dispatch(
+        getMyWords({
+          q: searchTerm || undefined,
+          status: statusParam,
+          sort: sortParam,
+          type: typeParam,
+          page: pageOverride ?? page,
+        }),
+      );
+    },
+    [dispatch, searchTerm, selectedStatus, selectedSort, selectedType, page],
+  );
 
   useEffect(() => {
     fetchWords();
   }, [fetchWords]);
 
-  // 전체 선택/해제
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPage(1);
+    setSearchTerm(value);
+    fetchWords(1);
+  };
+
+  const handleTypeSelect = (type: WordFilterType) => {
+    setPage(1);
+    setSelectedType(type);
+    fetchWords(1);
+  };
+
+  const handleStatusSelect = (status: string) => {
+    setPage(1);
+    setSelectedStatus(status);
+    fetchWords(1);
+  };
+
+  const handleSortSelect = (sort: string) => {
+    setPage(1);
+    setSelectedSort(sort);
+    fetchWords(1);
+  };
+
   const handleToggleSelectAll = () => {
     if (isAllSelected) {
       setSelectedIds([]);
@@ -92,34 +127,52 @@ export const useMyWord = () => {
     });
 
     setSelectedIds([]);
+
     await Promise.all(promises);
   };
 
   const handleBulkDelete = async () => {
     const promises = selectedIds.map((id) => dispatch(deleteWord(id)));
-    setSelectedIds([]);
+
     await Promise.all(promises);
+
+    setSelectedIds([]);
+
+    // 마지막 페이지 삭제 처리
+    if (userWords.length === selectedIds.length && page > 1) {
+      setPage(page - 1);
+    } else {
+      fetchWords();
+    }
   };
 
   return {
     userWords: filteredWords,
+    pagination,
+    page,
+    setPage,
     isLoading,
     error,
     selectedIds,
     setSelectedIds,
+
     headerProps: {
       searchTerm,
-      onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-        setSearchTerm(e.target.value),
+      onSearchChange: handleSearchChange,
+
       selectedType,
-      onTypeSelect: setSelectedType,
+      onTypeSelect: handleTypeSelect,
+
       selectedStatus,
-      onStatusSelect: setSelectedStatus,
+      onStatusSelect: handleStatusSelect,
+
       selectedSort,
-      onSortSelect: setSelectedSort,
+      onSortSelect: handleSortSelect,
+
       selectedCount: selectedIds.length,
-      isAllSelected, // 전체 선택 상태 전달
-      onToggleSelectAll: handleToggleSelectAll, // 토글 함수 전달
+      isAllSelected,
+
+      onToggleSelectAll: handleToggleSelectAll,
       onChangeStatus: handleBulkChangeStatus,
       onDelete: handleBulkDelete,
     },

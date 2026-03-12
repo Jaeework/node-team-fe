@@ -1,7 +1,4 @@
-import type {
-  ButtonRadius,
-  ButtonVariant,
-} from "../../../../components/ui/button/Button.tokens";
+import type { ButtonRadius, ButtonVariant } from "../button/Button.tokens";
 
 export interface DropdownProps {
   label?: React.ReactNode;

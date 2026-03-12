@@ -2,18 +2,22 @@ import { Search, Download } from "lucide-react";
 import { useMyWord } from "../../hooks/useMyWord";
 import Header from "./components/Header/Header";
 import WordTypeToggle from "./components/WordTypeToggle/WordTypeToggle";
-import Dropdown from "./components/Dropdown/Dropdown";
+import Dropdown from "../../components/ui/Dropdown/Dropdown";
 import BulkActionBar from "./components/BulkActionBar/BulkActionBar";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import Button from "../../components/ui/button/Button";
 import GridLayout from "./components/GridLayout";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import Pagination from "../../components/ui/Pagination/Pagination";
 
 const MyWordPage = () => {
   const {
     headerProps,
     userWords,
+    pagination,
+    page,
+    setPage,
     isLoading,
     error,
     selectedIds,
@@ -124,18 +128,30 @@ const MyWordPage = () => {
         )}
 
         {!isLoading && !error && userWords.length > 0 && (
-          <GridLayout>
-            {userWords.map((userWord) => (
-              <WordCard
-                key={userWord._id}
-                word={userWord.word}
-                isDone={userWord.isDone}
-                newsList={userWord.word.news?.map((n) => n.news)}
-                isSelected={selectedIds.includes(userWord._id)}
-                onSelect={() => toggleSelection(userWord._id)}
-              />
-            ))}
-          </GridLayout>
+          <>
+            <GridLayout>
+              {userWords.map((userWord) => (
+                <WordCard
+                  key={userWord._id}
+                  word={userWord.word}
+                  isDone={userWord.isDone}
+                  newsList={userWord.word.news?.map((n) => n.news)}
+                  isSelected={selectedIds.includes(userWord._id)}
+                  onSelect={() => toggleSelection(userWord._id)}
+                />
+              ))}
+            </GridLayout>
+
+            {pagination && pagination.totalPages > 1 && (
+              <div className="mt-8 flex justify-center">
+                <Pagination
+                  page={page}
+                  totalPages={pagination.totalPages}
+                  onPageChange={setPage}
+                />
+              </div>
+            )}
+          </>
         )}
         {!isLoading && !error && userWords.length === 0 && (
           <div className="border-border text-ink/50 flex h-40 items-center justify-center rounded-xl border-2 border-dashed font-medium">
