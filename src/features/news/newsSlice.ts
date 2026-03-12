@@ -7,9 +7,9 @@ import type {
   News,
   NewsPagination,
 } from "./news.types";
+import { showToast } from "../toast/toastSlice"; // 토스트 액션 임포트
 
-//전체 뉴스 가져오기
-
+// 전체 뉴스 가져오기
 export const fetchArticles = createAsyncThunk<
   { articles: News[]; pagination: NewsPagination },
   { page: number; limit: number; keyword?: string; level?: string },
@@ -75,20 +75,33 @@ export const fetchNewsDetail = createAsyncThunk<
   }
 });
 
+// 단어 저장 시 성공/실패 토스트 추가
 export const saveUserWords = createAsyncThunk<
   void,
   { wordIds: string[] },
   { rejectValue: string }
->("news/saveUserWords", async ({ wordIds }, { rejectWithValue }) => {
+>("news/saveUserWords", async ({ wordIds }, { rejectWithValue, dispatch }) => {
   try {
     await api.post("/user/words", { wordIds });
+    // 성공 시 토스트 표시
+    dispatch(
+      showToast({
+        message: "단어가 내 단어장에 저장되었습니다.",
+        type: "success",
+        position: "right-top",
+      }),
+    );
   } catch (error) {
-    if (isApiError(error) && error.isUserError) {
-      return rejectWithValue(
-        error.message || "단어 저장 중 오류가 발생했습니다.",
-      );
-    }
-    return rejectWithValue("단어 저장 중 오류가 발생했습니다.");
+    const errorMsg =
+      isApiError(error) && error.isUserError
+        ? error.message || "단어 저장 중 오류가 발생했습니다."
+        : "단어 저장 중 오류가 발생했습니다.";
+
+    // 실패 시 토스트 표시
+    dispatch(
+      showToast({ message: errorMsg, type: "error", position: "right-top" }),
+    );
+    return rejectWithValue(errorMsg);
   }
 });
 
