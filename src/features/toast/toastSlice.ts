@@ -6,6 +6,7 @@ const initialState: ToastState = {
   message: "",
   type: "info",
   isVisible: false,
+  position: "bottom",
 };
 
 const toastSlice = createSlice({
@@ -15,10 +16,15 @@ const toastSlice = createSlice({
   reducers: {
     showToast: (
       state,
-      action: PayloadAction<{ message: string; type?: ToastState["type"] }>,
+      action: PayloadAction<{
+        message: string;
+        type?: ToastState["type"];
+        position?: ToastState["position"];
+      }>,
     ) => {
       state.message = action.payload.message;
       state.type = action.payload.type || "info";
+      state.position = action.payload.position || "bottom";
       state.isVisible = true;
     },
     hideToast: (state) => {

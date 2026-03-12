@@ -68,6 +68,7 @@ export const saveUserWords = createAsyncThunk<
       showToast({
         message: "단어가 내 단어장에 저장되었습니다.",
         type: "success",
+        position: "right-top",
       }),
     );
   } catch (error) {
@@ -77,7 +78,9 @@ export const saveUserWords = createAsyncThunk<
         : "단어 저장 중 오류가 발생했습니다.";
 
     // 실패 시 토스트 표시
-    dispatch(showToast({ message: errorMsg, type: "error" }));
+    dispatch(
+      showToast({ message: errorMsg, type: "error", position: "right-top" }),
+    );
     return rejectWithValue(errorMsg);
   }
 });

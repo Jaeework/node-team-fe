@@ -1,22 +1,27 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../features/hooks";
-import { hideToast, showToast } from "../../../features/toast/toastSlice";
+import { hideToast } from "../../../features/toast/toastSlice";
 import { cn } from "../../../lib/utils";
+import type { ToastPosition } from "../../../features/toast/toast.types";
 
 const Toast = () => {
   const dispatch = useAppDispatch();
+  const { message, type, isVisible, position } = useAppSelector(
+    (state) => state.toast,
+  );
 
-  const { message, type, isVisible } = useAppSelector((state) => state.toast);
-
-  const newsError = useAppSelector((state) => state.news.error);
-  const wordError = useAppSelector((state) => state.word.error);
-
-  useEffect(() => {
-    const errorMsg = newsError || wordError;
-    if (errorMsg) {
-      dispatch(showToast({ message: errorMsg, type: "error" }));
-    }
-  }, [newsError, wordError, dispatch]);
+  const positionStyles: Record<ToastPosition, string> = {
+    top: "top-22 left-1/2 -translate-x-1/2 slide-in-from-top-4",
+    bottom: "bottom-10 left-1/2 -translate-x-1/2 slide-in-from-bottom-4",
+    left: "left-10 top-1/2 -translate-y-1/2 slide-in-from-left-4",
+    right: "right-10 top-1/2 -translate-y-1/2 slide-in-from-right-4",
+    "left-top": "top-22 left-10 slide-in-from-top-4 slide-in-from-left-4",
+    "right-top": "top-22 right-10 slide-in-from-top-4 slide-in-from-right-4",
+    "left-bottom":
+      "bottom-10 left-10 slide-in-from-bottom-4 slide-in-from-left-4",
+    "right-bottom":
+      "bottom-10 right-10 slide-in-from-bottom-4 slide-in-from-right-4",
+  };
 
   useEffect(() => {
     if (isVisible) {
@@ -31,7 +36,12 @@ const Toast = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 fixed bottom-10 left-1/2 z-9999 -translate-x-1/2">
+    <div
+      className={cn(
+        "animate-in fade-in fixed z-9999 transition-all",
+        positionStyles[position],
+      )}
+    >
       <div
         className={cn(
           "rounded-xl px-6 py-3 text-sm font-medium shadow-lg transition-all",
