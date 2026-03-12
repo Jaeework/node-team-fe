@@ -12,11 +12,11 @@ import type {
 
 export const fetchArticles = createAsyncThunk<
   { articles: News[]; pagination: NewsPagination },
-  { page: number; limit: number; keyword?: string },
+  { page: number; limit: number; keyword?: string; level?: string },
   { rejectValue: string }
 >(
   "news/fetchArticles",
-  async ({ page, limit, keyword }, { rejectWithValue }) => {
+  async ({ page, limit, keyword, level }, { rejectWithValue }) => {
     try {
       const response = await api.get<
         ApiResponse<News[]> & { pagination?: NewsPagination }
@@ -25,6 +25,7 @@ export const fetchArticles = createAsyncThunk<
           page,
           limit,
           ...(keyword ? { keyword } : {}),
+          ...(level ? { level } : {}),
         },
       });
 
