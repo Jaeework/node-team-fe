@@ -5,7 +5,11 @@ import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { fetchNewsDetail, saveUserWords } from "../../features/news/newsSlice";
+import {
+  fetchNewsDetail,
+  saveUserWords,
+  saveUserArticle,
+} from "../../features/news/newsSlice";
 import { useEffect, useState, useMemo, useRef } from "react";
 
 const NewsDetailPage = () => {
@@ -69,9 +73,17 @@ const NewsDetailPage = () => {
                 {currentNews.level}
                 {")"}
               </Badge>
+              {"  |  "}
               발행 날짜:{" "}
-              {new Date(currentNews.published_at).toLocaleDateString()} / 출처:{" "}
-              {currentNews.source} / 아이디 : {id}
+              {new Date(currentNews.published_at).toLocaleDateString()}
+              {"  |  "} 기사출처:{" "}
+              <a
+                href={currentNews.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {currentNews.source}
+              </a>
             </section>
             <div className="absolute top-7 right-7 z-10 md:top-10 md:right-10">
               {/* 빈책 -> 파란색으로 변경 alert표시 스낵바? */}
@@ -80,7 +92,17 @@ const NewsDetailPage = () => {
                 size="icon"
                 variant="outline"
                 radius="md"
-                onClick={() => window.open(currentNews.url)}
+                onClick={() => {
+                  if (user) {
+                    if (id) {
+                      dispatch(saveUserArticle({ newsId: id }));
+                    }
+                  } else {
+                    {
+                      /* 로그인 창으로 네비게이션 */
+                    }
+                  }
+                }}
               >
                 <BookOpen size={15} />
               </Button>
