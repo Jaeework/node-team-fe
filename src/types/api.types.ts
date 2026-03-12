@@ -24,7 +24,14 @@ export interface Pagination {
   totalPages: number;
 }
 
-export interface PaginatedApiResponse<T> extends ApiResponse<T> {
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T | null;
+}
+
+export interface PaginatedApiResponse<T> {
+  success: boolean;
+  data?: T | null;
   pagination?: Pagination;
 }
 
