@@ -80,7 +80,7 @@ const NewsDetailPage = () => {
                 size="icon"
                 variant="outline"
                 radius="md"
-                onClick={() => window.open(currentNews.url)}
+                onClick={() => {}}
               >
                 <BookOpen size={15} />
               </Button>
@@ -130,7 +130,7 @@ const NewsDetailPage = () => {
             </section>
           </div>
         </article>
-        {/* 단어장 부분 (하드코딩) */}
+        {/* 단어장 부분  */}
         <aside className="space-y-6 md:col-span-4">
           <section className="border-border flex h-[calc(100vh-150px)] flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
             {/* 단어장 헤더 */}
@@ -195,14 +195,9 @@ const NewsDetailPage = () => {
                   dispatch(saveUserWords({ wordIds: selectedIds }))
                     .unwrap()
                     .then(() => {
-                      alert("단어가 저장되었습니다!");
                       setSelectedIds([]);
                     })
-                    .catch((err) => {
-                      alert(
-                        err || "단어 저장에 실패했습니다. 다시 시도해주세요.",
-                      );
-                    });
+                    .catch();
                 }}
               >
                 {selectedIds.length > 0
