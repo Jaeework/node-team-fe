@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type {
   LoginResponseData,
   User,
-  UserLevel,
+  UserRequestData,
   UserState,
 } from "./user.types";
 import api from "../../lib/axios";
@@ -34,13 +34,7 @@ export const checkDuplicateEmail = createAsyncThunk<
 
 export const registerUser = createAsyncThunk<
   User,
-  {
-    nickname: string;
-    email: string;
-    level: UserLevel;
-    password: string;
-    navigate: (path: string) => void;
-  },
+  UserRequestData & { navigate: (path: string) => void },
   { rejectValue: string }
 >(
   "user/registerUser",
@@ -175,6 +169,30 @@ export const logOut = createAsyncThunk<void, void, { rejectValue: string }>(
   },
 );
 
+export const updateUser = createAsyncThunk<
+  User,
+  UserRequestData,
+  { rejectValue: string }
+>("user/updateUser", async (data, { rejectWithValue }) => {
+  try {
+    const res = await api.put<ApiResponse<User>>("/user/me", data);
+
+    const user = res.data.data;
+    if (!user) {
+      return rejectWithValue("프로필 수정 중 오류가 발생했습니다.");
+    }
+
+    return user;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(
+        error.message || "프로필 수정 중 오류가 발생했습니다.",
+      );
+    }
+    return rejectWithValue("프로필 수정 중 오류가 발생했습니다.");
+  }
+});
+
 const initialState: UserState = {
   user: null,
   isLoading: false,
@@ -182,6 +200,7 @@ const initialState: UserState = {
   isInitialized: false,
   registrationError: null,
   loginError: null,
+  updateError: null,
 };
 
 const userSlice = createSlice({
@@ -260,6 +279,20 @@ const userSlice = createSlice({
       .addCase(logOut.rejected, (state) => {
         state.user = null;
         sessionStorage.removeItem("token");
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.updateError = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload;
+        state.updateError = null;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.updateError =
+          action.payload || "프로필 수정 중 오류가 발생했습니다.";
       });
   },
 });

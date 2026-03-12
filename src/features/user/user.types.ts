@@ -11,6 +11,13 @@ export interface LoginResponseData {
   token: string;
 }
 
+export interface UserRequestData {
+  nickname?: string;
+  email?: string;
+  level?: UserLevel;
+  password?: string;
+}
+
 export interface UserState {
   user: User | null;
   isLoading: boolean;
@@ -18,4 +25,5 @@ export interface UserState {
   isInitialized: boolean;
   registrationError: string | null;
   loginError: string | null;
+  updateError: string | null;
 }
