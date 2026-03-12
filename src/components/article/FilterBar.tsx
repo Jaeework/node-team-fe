@@ -1,13 +1,17 @@
-const levels = ["Level", "A1", "A2", "B1", "B2"];
+import type { UserLevel } from "../../features/user/user.types";
+import InputWithIcon from "../ui/input-with-icon/InputWithIcon";
+import { Search } from "lucide-react";
+
+const levels: Array<"Level" | UserLevel> = ["Level", "A2", "B1", "B2", "C1"];
 const topics = ["Topic", "Tech", "Economy", "Finance", "Business"];
 
 const FilterBar = () => {
   return (
     <div className="space-y-4">
-      <input
+      <InputWithIcon
         type="text"
         placeholder="Search by topic, keyword, or company..."
-        className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm outline-none placeholder:text-gray-400 focus:border-gray-400"
+        leftIcon={<Search size={16} />}
       />
 
       <div className="flex flex-wrap gap-3">
