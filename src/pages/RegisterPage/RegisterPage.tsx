@@ -8,8 +8,11 @@ import InputWithMessage from "../../components/ui/input-with-message/InputWithMe
 import type { RegisterFormData } from "./RegisterPage.types";
 import { Check } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { useAppSelector } from "../../features/hooks";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 const RegisterPage = () => {
+  const { isLoading, isCheckingEmail } = useAppSelector((state) => state.user);
   const {
     formData,
     fieldStates,
@@ -60,15 +63,20 @@ const RegisterPage = () => {
                   {field.name === "email" && (
                     <Button
                       type="button"
-                      variant="border"
+                      variant={isCheckingEmail ? "disable" : "border"}
                       size="icon"
+                      disabled={isCheckingEmail}
                       onClick={handleCheckEmail}
                       className={cn(
                         `shrink-0 text-gray-300`,
                         isEmailChecked && "text-green-500",
                       )}
                     >
-                      <Check size={16} />
+                      {isCheckingEmail ? (
+                        <LoadingSpinner size="sm" />
+                      ) : (
+                        <Check size={16} />
+                      )}
                     </Button>
                   )}
                 </div>
@@ -133,10 +141,12 @@ const RegisterPage = () => {
             size="xl"
             radius="xl"
             isFullWidth
+            variant={isLoading ? "disable" : "primary"}
+            disabled={isLoading}
             className="shadow-primary/20 overflow-hidden text-lg leading-normal font-bold tracking-[0.015em] shadow-lg transition-all active:scale-[0.98]"
             type="submit"
           >
-            <h1>Create Account</h1>
+            {isLoading ? <LoadingSpinner size="sm" /> : <h1>Create Account</h1>}
           </Button>
         </form>
         <div className="mt-1 pt-6 text-center">
