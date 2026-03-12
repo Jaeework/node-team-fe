@@ -5,11 +5,19 @@ import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
-import { fetchNewsDetail, saveUserWords } from "../../features/news/newsSlice";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
+import { showToast } from "../../features/toast/toastSlice";
+import {
+  fetchNewsDetail,
+  saveUserWords,
+  saveUserArticle,
+} from "../../features/news/newsSlice";
 import { useEffect, useState, useMemo, useRef } from "react";
 
 const NewsDetailPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const { user } = useAppSelector((state) => state.user);
 
@@ -47,7 +55,7 @@ const NewsDetailPage = () => {
   }, [dispatch, id]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner size={"lg"} />;
   }
 
   if (!currentNews) {
@@ -69,18 +77,40 @@ const NewsDetailPage = () => {
                 {currentNews.level}
                 {")"}
               </Badge>
+              {"  |  "}
               발행 날짜:{" "}
-              {new Date(currentNews.published_at).toLocaleDateString()} / 출처:{" "}
-              {currentNews.source} / 아이디 : {id}
+              {new Date(currentNews.published_at).toLocaleDateString()}
+              {"  |  "} 기사출처:{" "}
+              <a
+                href={currentNews.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {currentNews.source}
+              </a>
             </section>
             <div className="absolute top-7 right-7 z-10 md:top-10 md:right-10">
-              {/* 빈책 -> 파란색으로 변경 alert표시 스낵바? */}
-              {/* 유저뉴스 저장하는 버튼임.  */}
               <Button
                 size="icon"
                 variant="outline"
                 radius="md"
-                onClick={() => {}}
+                onClick={() => {
+                  if (user) {
+                    if (id) {
+                      dispatch(saveUserArticle({ newsId: id }));
+                    }
+                  } else {
+                    /* 로그인 창으로 네비게이션 */
+                    dispatch(
+                      showToast({
+                        message: "로그인이 필요합니다.",
+                        type: "error",
+                        position: "bottom",
+                      }),
+                    );
+                    navigate("/login");
+                  }
+                }}
               >
                 <BookOpen size={15} />
               </Button>

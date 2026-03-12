@@ -1,14 +1,15 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../features/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   clearErrors,
   loginWithEmail,
   loginWithGoogle,
 } from "../features/user/userSlice";
 import type { LoginFormData } from "../pages/LoginPage/LoginPage.types";
+import type { ValidationMessage } from "../components/ui/input-with-message/InputWithMessage.types";
 
-type FieldErrors = Partial<Record<keyof LoginFormData, string>>;
+type FieldStates = Partial<Record<keyof LoginFormData, ValidationMessage[]>>;
 
 const useLoginForm = () => {
   const dispatch = useAppDispatch();
@@ -16,30 +17,47 @@ const useLoginForm = () => {
   const location = useLocation();
   const from = location.state?.from || "/";
   const loginError = useAppSelector((state) => state.user.loginError);
+
+  useEffect(() => {
+    dispatch(clearErrors());
+  }, [dispatch]);
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [fieldStates, setFieldStates] = useState<FieldStates>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const fieldName = name as keyof LoginFormData;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (fieldErrors[name as keyof LoginFormData]) {
-      setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    if (fieldStates[fieldName]) {
+      setFieldStates((prev) => {
+        const { [fieldName]: _, ...rest } = prev;
+        return rest;
+      });
     }
   };
 
   const validateForm = (): boolean => {
-    const errors: FieldErrors = {};
+    const newFieldStates: FieldStates = {};
+    let isValid = true;
+
     if (!formData.email.trim()) {
-      errors.email = "이메일을 입력하세요.";
+      newFieldStates.email = [
+        { message: "이메일을 입력하세요", variant: "error" },
+      ];
+      isValid = false;
     }
     if (!formData.password.trim()) {
-      errors.password = "패스워드를 입력하세요.";
+      newFieldStates.password = [
+        { message: "패스워드를 입력하세요", variant: "error" },
+      ];
+      isValid = false;
     }
-    setFieldErrors(errors);
-    return Object.keys(errors).length === 0;
+
+    setFieldStates(newFieldStates);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -68,7 +86,7 @@ const useLoginForm = () => {
   return {
     formData,
     loginError,
-    fieldErrors,
+    fieldStates,
     handleChange,
     handleSubmit,
     handleGoogleLogin,

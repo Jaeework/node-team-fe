@@ -22,9 +22,9 @@ export const inputColors = {
       "bg-paper/50 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f7f7f5]",
   },
   primary: {
-    wrapper: "bg-primary/50 border-transparent",
+    wrapper: "bg-primary/5 border-transparent",
     input:
-      "bg-primary/50 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#97aec1]",
+      "bg-primary/5 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f3f6f8]",
   },
   error: {
     wrapper: "bg-red-50 border-red-300",

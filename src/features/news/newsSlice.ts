@@ -102,6 +102,33 @@ export const saveUserWords = createAsyncThunk<
   }
 });
 
+export const saveUserArticle = createAsyncThunk<
+  void,
+  { newsId: string },
+  { rejectValue: string }
+>("news/saveUserArticle", async ({ newsId }, { rejectWithValue, dispatch }) => {
+  try {
+    await api.post(`/user/news/${newsId}`);
+    dispatch(
+      showToast({
+        message: "기사가 저장되었습니다.",
+        type: "success",
+        position: "right-top",
+      }),
+    );
+  } catch (error) {
+    const errorMsg =
+      isApiError(error) && error.isUserError
+        ? error.message || "기사 저장 중 오류가 발생했습니다."
+        : "기사 저장 중 오류가 발생했습니다.";
+
+    dispatch(
+      showToast({ message: errorMsg, type: "error", position: "right-top" }),
+    );
+    return rejectWithValue(errorMsg);
+  }
+});
+
 const initialState: NewsState = {
   currentNews: null,
   currentWords: [],
@@ -167,6 +194,17 @@ const newsSlice = createSlice({
         state.isLoading = false;
         state.error =
           action.payload || "뉴스 정보를 가져오는 중 오류가 발생했습니다.";
+      })
+      .addCase(saveUserArticle.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(saveUserArticle.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(saveUserArticle.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "기사 저장 중 오류가 발생했습니다.";
       });
   },
 });
