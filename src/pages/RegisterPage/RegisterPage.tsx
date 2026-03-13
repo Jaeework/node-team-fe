@@ -1,17 +1,21 @@
-import Button from "../../components/ui/button/Button";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Check } from "lucide-react";
+import Button from "../../components/ui/button/Button";
 import Label from "../../components/ui/label/Label";
-import { REGISTER_FIELDS } from "./constants/registerFields";
-import useRegister from "../../hooks/useRegister";
 import Input from "../../components/ui/input/Input";
 import InputWithMessage from "../../components/ui/input-with-message/InputWithMessage";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import Tooltip from "../../components/ui/tooltip/Tooltip";
+import { REGISTER_FIELDS } from "./constants/registerFields";
+import useRegister from "../../hooks/useRegister";
 import type { RegisterFormData } from "./RegisterPage.types";
-import { Check } from "lucide-react";
 import { cn } from "../../lib/utils";
 import { useAppSelector } from "../../features/hooks";
-import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import { LEVEL_INFO } from "../../constants/levelInfo";
 
 const RegisterPage = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
   const { isLoading, isCheckingEmail } = useAppSelector((state) => state.user);
   const {
     formData,
@@ -89,7 +93,7 @@ const RegisterPage = () => {
             <label className="text-ink-700 text-sm leading-normal font-semibold">
               English Proficiency Level
             </label>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="relative grid grid-cols-4 gap-3">
               {["A2", "B1", "B2", "C1"].map((level) => (
                 <label className="cursor-pointer" key={level}>
                   <Input
@@ -97,7 +101,10 @@ const RegisterPage = () => {
                     name="level"
                     value={level}
                     checked={formData.level === level}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setShowTooltip(true);
+                    }}
                     type="radio"
                   />
                   <div className="peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary border-ink-300 bg-ink-50 flex flex-col items-center justify-center rounded-lg border p-3 transition-all">
@@ -107,6 +114,17 @@ const RegisterPage = () => {
                   </div>
                 </label>
               ))}
+              {formData.level && showTooltip && (
+                <Tooltip
+                  message={LEVEL_INFO[formData.level].message}
+                  position="bottom"
+                  arrowPosition={LEVEL_INFO[formData.level].arrowPosition}
+                  variant="accent"
+                  size="sm"
+                  className="w-full"
+                  onClose={() => setShowTooltip(false)}
+                />
+              )}
             </div>
           </div>
           <div className="flex items-start gap-3 pt-2">

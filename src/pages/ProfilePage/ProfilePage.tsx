@@ -7,12 +7,12 @@ const ProfilePage = () => {
   const { user } = useAppSelector((state) => state.user);
   if (!user) return null;
   return (
-    <div className="mx-auto w-full max-w-7xl py-8 md:px-4">
-      <div className="flex flex-col gap-8 pb-12 md:flex-row">
+    <div className="mx-auto w-full max-w-7xl pt-8 md:px-4">
+      <div className="flex flex-col gap-8 md:flex-row md:pb-12">
         {/* 사이드바 */}
         <ProfileSidebar />
         {/* 내용 */}
-        <div className="border-ink/10 flex-1 rounded-2xl border bg-white p-6 shadow-sm md:p-8">
+        <div className="border-ink/10 flex-1 rounded-t-2xl border bg-white p-6 shadow-sm md:rounded-b-2xl md:p-8">
           <div className="mb-8">
             <h1 className="text-ink-900 text-2xl font-bold">Profile Details</h1>
             <p className="text-ink/50">

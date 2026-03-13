@@ -6,8 +6,13 @@ import InputWithMessage from "../../../../components/ui/input-with-message/Input
 import useUpdateUser from "../../../../hooks/useUpdateUser";
 import LoadingSpinner from "../../../../components/ui/LoadingSpinner";
 import { cn } from "../../../../lib/utils";
+import Tooltip from "../../../../components/ui/tooltip/Tooltip";
+import { LEVEL_INFO } from "../../../../constants/levelInfo";
+import { useState } from "react";
 
 const ProfileDetail = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const {
     user,
     isEdit,
@@ -112,7 +117,7 @@ const ProfileDetail = () => {
         <div className="space-y-6">
           <div className="flex flex-col gap-2">
             <Label size="sm">English Proficiency Level</Label>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="relative grid grid-cols-4 gap-3">
               {(["A2", "B1", "B2", "C1"] as const).map((level) => (
                 <label className={cn(isEdit && "cursor-pointer")} key={level}>
                   <Input
@@ -121,7 +126,10 @@ const ProfileDetail = () => {
                     name="level"
                     value={level}
                     checked={formData.level === level}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      setShowTooltip(true);
+                    }}
                     type="radio"
                   />
                   <div className="peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary border-ink-300 bg-ink-50 flex flex-col items-center justify-center rounded-lg border p-3 transition-all">
@@ -131,6 +139,17 @@ const ProfileDetail = () => {
                   </div>
                 </label>
               ))}
+              {formData.level && showTooltip && (
+                <Tooltip
+                  message={LEVEL_INFO[formData.level].message}
+                  position="bottom"
+                  arrowPosition={LEVEL_INFO[formData.level].arrowPosition}
+                  variant="accent"
+                  size="sm"
+                  className="w-full"
+                  onClose={() => setShowTooltip(false)}
+                />
+              )}
             </div>
           </div>
         </div>
