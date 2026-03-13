@@ -184,6 +184,7 @@ const useUpdateUser = () => {
       }));
       setIsEdit(false);
       setPasswordEdit(false);
+      setFieldStates(getInitialFieldStates());
       return true;
     }
 
