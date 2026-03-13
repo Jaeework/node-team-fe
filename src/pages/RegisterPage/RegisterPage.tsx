@@ -19,7 +19,6 @@ const RegisterPage = () => {
     isEmailChecked,
     policy,
     policyError,
-    registrationError,
     handleCheckEmail,
     handleChange,
     handlePolicyChange,
@@ -38,11 +37,6 @@ const RegisterPage = () => {
           </p>
         </div>
         <form className="space-y-5" onSubmit={handleSubmit}>
-          {registrationError && (
-            <p className="text-center text-sm text-red-500">
-              {registrationError}
-            </p>
-          )}
           {REGISTER_FIELDS.map((field) => {
             const fieldName = field.name as keyof RegisterFormData;
             return (

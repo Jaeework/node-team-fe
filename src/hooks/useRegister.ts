@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../features/hooks";
+import { useAppDispatch } from "../features/hooks";
 import {
   checkDuplicateEmail,
   clearErrors,
@@ -39,7 +39,6 @@ const getInitialFieldStates = (): FieldStates => {
 const useRegister = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { registrationError } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(clearErrors());
@@ -247,7 +246,6 @@ const useRegister = () => {
     isEmailChecked,
     policy,
     policyError,
-    registrationError,
     handleCheckEmail,
     handleChange,
     handlePolicyChange,
