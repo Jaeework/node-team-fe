@@ -12,4 +12,5 @@ export interface TooltipProps {
   variant?: TooltipVariant;
   size?: TooltipSize;
   className?: string;
+  onClose?: () => void;
 }

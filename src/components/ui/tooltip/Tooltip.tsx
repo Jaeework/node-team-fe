@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { cn } from "../../../lib/utils";
 import {
   tooltipArrowDirections,
@@ -15,7 +16,9 @@ const Tooltip = ({
   variant = "ink",
   size = "md",
   className,
+  onClose,
 }: TooltipProps) => {
+  const tooltipRef = useRef<HTMLDivElement>(null);
   const variantStyle = tooltipVariants[variant];
 
   const arrowColorStyle = {
@@ -25,8 +28,25 @@ const Tooltip = ({
     right: { borderRightColor: variantStyle.arrow },
   };
 
+  useEffect(() => {
+    if (!onClose) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        tooltipRef.current &&
+        !tooltipRef.current.contains(e.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
   return (
     <div
+      ref={tooltipRef}
       role="tooltip"
       className={cn(
         "absolute z-10 w-max",
