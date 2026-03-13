@@ -1,5 +1,8 @@
 import { Search, Download } from "lucide-react";
 import { useMyWord } from "../../hooks/useMyWord";
+import { useState } from "react";
+import { showToast } from "../../features/toast/toastSlice";
+
 import Header from "./components/Header/Header";
 import WordTypeToggle from "./components/WordTypeToggle/WordTypeToggle";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
@@ -10,8 +13,15 @@ import GridLayout from "./components/GridLayout";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Pagination from "../../components/ui/Pagination/Pagination";
+import Toast from "../../components/ui/Toast/Toast";
+import ConfirmModal from "../../components/ui/ConfirmModal/ConfirmModal";
+
+import type { WordFilterType } from "./components/WordTypeToggle/WordTypeToggle.types";
+import { useAppDispatch } from "../../features/hooks";
 
 const MyWordPage = () => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const {
     headerProps,
     userWords,
@@ -22,6 +32,7 @@ const MyWordPage = () => {
     error,
     selectedIds,
     setSelectedIds,
+    downloadCSV,
   } = useMyWord();
 
   const toggleSelection = (id: string) => {
@@ -34,13 +45,25 @@ const MyWordPage = () => {
     await headerProps.onChangeStatus();
   };
 
-  const onDelete = async () => {
-    if (window.confirm("선택한 단어를 삭제하시겠습니까?")) {
-      await headerProps.onDelete();
-      alert("삭제되었습니다.");
-    }
+  const onDelete = () => {
+    setIsDeleteModalOpen(true);
   };
 
+  const dispatch = useAppDispatch();
+
+  const confirmDelete = async () => {
+    await headerProps.onDelete();
+
+    dispatch(
+      showToast({
+        message: "단어가 삭제되었습니다.",
+        type: "success",
+        position: "top",
+      }),
+    );
+
+    setIsDeleteModalOpen(false);
+  };
   return (
     <div className="min-h-screen pb-20">
       <div className="mx-auto flex max-w-5xl flex-col gap-6 p-6">
@@ -59,7 +82,7 @@ const MyWordPage = () => {
               variant="outline"
               radius="xl"
               className="text-primary active:text-primary hover:text-primary bg-white px-3 py-5 text-xs font-semibold transition-transform hover:bg-white active:scale-95 md:px-5 md:py-2.5 md:text-sm"
-              onClick={() => alert("준비 중인 기능입니다.")}
+              onClick={downloadCSV}
             >
               <Download className="size-4" strokeWidth={3} /> CSV Download
             </Button>
@@ -67,6 +90,7 @@ const MyWordPage = () => {
         />
 
         <div className="flex w-full flex-col gap-3 md:flex-row md:items-center">
+          {/* 검색 */}
           <div className="w-full md:flex-1">
             <InputWithIcon
               size="lg"
@@ -79,8 +103,10 @@ const MyWordPage = () => {
             />
           </div>
 
+          {/* 필터 영역 */}
           <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
-            <div className="flex w-full justify-start md:w-auto">
+            {/* Desktop WordTypeToggle */}
+            <div className="hidden md:flex">
               <WordTypeToggle
                 selectedValue={headerProps.selectedType}
                 onSelect={headerProps.onTypeSelect}
@@ -90,7 +116,26 @@ const MyWordPage = () => {
 
             <div className="flex w-full gap-2 md:w-auto">
               <Dropdown
-                label={headerProps.selectedStatus}
+                label={
+                  headerProps.selectedType === "All"
+                    ? "Type"
+                    : headerProps.selectedType
+                }
+                variant="outline"
+                radius="lg"
+                options={["All", "Word", "Idiom"]}
+                className="text-primary w-full flex-1 text-sm font-semibold md:hidden"
+                onSelect={(value) =>
+                  headerProps.onTypeSelect(value as WordFilterType)
+                }
+              />
+
+              <Dropdown
+                label={
+                  headerProps.selectedStatus === "All"
+                    ? "Status"
+                    : headerProps.selectedStatus
+                }
                 variant="outline"
                 radius="lg"
                 options={["All", "학습 중", "학습 완료"]}
@@ -135,7 +180,7 @@ const MyWordPage = () => {
                   key={userWord._id}
                   word={userWord.word}
                   isDone={userWord.isDone}
-                  newsList={userWord.word.news?.map((n) => n.news)}
+                  newsList={userWord.word.news}
                   isSelected={selectedIds.includes(userWord._id)}
                   onSelect={() => toggleSelection(userWord._id)}
                 />
@@ -159,6 +204,16 @@ const MyWordPage = () => {
           </div>
         )}
       </main>
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="단어 삭제"
+        message="선택한 단어를 삭제하시겠습니까?"
+        confirmText="삭제"
+        cancelText="취소"
+        onConfirm={confirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
+      <Toast />
     </div>
   );
 };
