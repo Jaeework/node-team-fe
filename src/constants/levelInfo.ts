@@ -1,7 +1,8 @@
 import type { TooltipArrowPosition } from "../components/ui/tooltip/Tooltip.tokens";
+import type { UserLevel } from "../features/user/user.types";
 
 export const LEVEL_INFO: Record<
-  string,
+  UserLevel,
   { message: string; arrowPosition: TooltipArrowPosition }
 > = {
   A2: {
