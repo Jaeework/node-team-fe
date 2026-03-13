@@ -34,4 +34,5 @@ export const buttonVariants = {
   background: "bg-background text-primary hover:bg-border",
   accent: "bg-accent text-ink hover:bg-accent/80",
   danger: "bg-red-50 text-red-500 hover:bg-red-100",
+  disable: "bg-gray-400 cursor-not-allowed text-gray-300",
 } as const;

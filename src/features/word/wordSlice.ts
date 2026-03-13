@@ -40,7 +40,7 @@ export const getMyWords = createAsyncThunk<
     const data = res.data.data;
     const pagination = res.data.pagination;
 
-    if (!data) {
+    if (!data || !pagination) {
       return rejectWithValue("단어장 데이터를 불러올 수 없습니다.");
     }
 

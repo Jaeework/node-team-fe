@@ -8,6 +8,30 @@ import type {
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
 
+export const checkDuplicateEmail = createAsyncThunk<
+  boolean,
+  string,
+  { rejectValue: string }
+>("user/checkDuplicateEmail", async (email, { rejectWithValue }) => {
+  try {
+    const res = await api.get<ApiResponse<boolean>>("/auth/check-email", {
+      params: { email },
+    });
+
+    const isDuplicate = res.data.data;
+    if (isDuplicate === undefined || isDuplicate === null) {
+      return rejectWithValue("이메일을 확인하지 못했습니다.");
+    }
+
+    return isDuplicate;
+  } catch (error) {
+    if (isApiError(error) && error.isUserError) {
+      return rejectWithValue(error.message || "이메일을 확인하지 못했습니다.");
+    }
+    return rejectWithValue("이메일 확인 중 오류가 발생했습니다");
+  }
+});
+
 export const registerUser = createAsyncThunk<
   User,
   {
@@ -25,7 +49,6 @@ export const registerUser = createAsyncThunk<
     { rejectWithValue },
   ) => {
     try {
-      // 유효성 검사는 나중에 컴포넌트 레벨로 옮길 예정
       if (!nickname || !email || !password) {
         return rejectWithValue("모든 필드를 입력해주세요.");
       }
@@ -155,6 +178,7 @@ export const logOut = createAsyncThunk<void, void, { rejectValue: string }>(
 const initialState: UserState = {
   user: null,
   isLoading: false,
+  isCheckingEmail: false,
   isInitialized: false,
   registrationError: null,
   loginError: null,
@@ -178,6 +202,15 @@ const userSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      .addCase(checkDuplicateEmail.pending, (state) => {
+        state.isCheckingEmail = true;
+      })
+      .addCase(checkDuplicateEmail.fulfilled, (state) => {
+        state.isCheckingEmail = false;
+      })
+      .addCase(checkDuplicateEmail.rejected, (state) => {
+        state.isCheckingEmail = false;
+      })
       .addCase(registerUser.pending, (state) => {
         state.isLoading = true;
       })
