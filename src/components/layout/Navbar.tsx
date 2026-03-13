@@ -79,7 +79,7 @@ const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="bg-background border-border absolute -right-2 z-60 mt-2 w-40 overflow-hidden rounded-lg border py-1 shadow-md md:-right-4">
                     <Link
-                      to="/mypage"
+                      to="/me/profile"
                       className="text-ink hover:bg-primary/10 hover:text-ink flex items-center gap-2.5 px-3 py-2.5 text-xs font-medium transition-colors"
                     >
                       <CircleUser className="h-4 w-4" />

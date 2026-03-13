@@ -2,7 +2,7 @@ import { type LabelProps } from "./Label.types";
 import { labelSizes } from "./Label.tokens";
 import { cn } from "../../../lib/utils";
 
-const Label = ({ htmlFor, size, className, ...props }: LabelProps) => {
+const Label = ({ htmlFor, size = "sm", className, ...props }: LabelProps) => {
   return (
     <label
       htmlFor={htmlFor}

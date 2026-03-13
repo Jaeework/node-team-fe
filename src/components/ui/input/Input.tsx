@@ -16,7 +16,7 @@ const Input = ({
         inputColors[color].input,
         inputSizes[size],
         !readOnly && "focus:border-primary/30",
-        readOnly && "bg-gray/30 border-border",
+        readOnly && "bg-ink/5 border-border",
         className,
       )}
       readOnly={readOnly}

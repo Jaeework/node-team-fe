@@ -55,7 +55,11 @@ const NewsDetailPage = () => {
   }, [dispatch, id]);
 
   if (isLoading) {
-    return <LoadingSpinner size={"lg"} />;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <LoadingSpinner size={"lg"} />
+      </div>
+    );
   }
 
   if (!currentNews) {

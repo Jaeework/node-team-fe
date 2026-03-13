@@ -14,26 +14,26 @@ export const inputColors = {
   default: {
     wrapper: "bg-background border-transparent",
     input:
-      "bg-background [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-background)]",
+      "bg-background border-transparent [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-background)]",
   },
   paper: {
     wrapper: "bg-paper/50 border-transparent",
     input:
-      "bg-paper/50 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f7f7f5]",
+      "bg-paper/50 border-transparent [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f7f7f5]",
   },
   primary: {
     wrapper: "bg-primary/5 border-transparent",
     input:
-      "bg-primary/5 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f3f6f8]",
+      "bg-primary/5 border-transparent [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_#f3f6f8]",
   },
   error: {
     wrapper: "bg-red-50 border-red-300",
     input:
-      "bg-red-50 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_theme(colors.red.50)]",
+      "bg-red-50 border-red-300 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_theme(colors.red.50)]",
   },
   success: {
     wrapper: "bg-green-50 border-green-300",
     input:
-      "bg-green-50 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_theme(colors.green.50)]",
+      "bg-green-50 border-green-300 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_theme(colors.green.50)]",
   },
 };
