@@ -1,5 +1,8 @@
 import { Search, Download } from "lucide-react";
 import { useMyWord } from "../../hooks/useMyWord";
+import { useState } from "react";
+import { showToast } from "../../features/toast/toastSlice";
+
 import Header from "./components/Header/Header";
 import WordTypeToggle from "./components/WordTypeToggle/WordTypeToggle";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
@@ -10,9 +13,15 @@ import GridLayout from "./components/GridLayout";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Pagination from "../../components/ui/Pagination/Pagination";
+import Toast from "../../components/ui/Toast/Toast";
+import ConfirmModal from "../../components/ui/ConfirmModal/ConfirmModal";
+
 import type { WordFilterType } from "./components/WordTypeToggle/WordTypeToggle.types";
+import { useAppDispatch } from "../../features/hooks";
 
 const MyWordPage = () => {
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const {
     headerProps,
     userWords,
@@ -36,13 +45,25 @@ const MyWordPage = () => {
     await headerProps.onChangeStatus();
   };
 
-  const onDelete = async () => {
-    if (window.confirm("선택한 단어를 삭제하시겠습니까?")) {
-      await headerProps.onDelete();
-      alert("삭제되었습니다.");
-    }
+  const onDelete = () => {
+    setIsDeleteModalOpen(true);
   };
 
+  const dispatch = useAppDispatch();
+
+  const confirmDelete = async () => {
+    await headerProps.onDelete();
+
+    dispatch(
+      showToast({
+        message: "단어가 삭제되었습니다.",
+        type: "success",
+        position: "top",
+      }),
+    );
+
+    setIsDeleteModalOpen(false);
+  };
   return (
     <div className="min-h-screen pb-20">
       <div className="mx-auto flex max-w-5xl flex-col gap-6 p-6">
@@ -183,6 +204,16 @@ const MyWordPage = () => {
           </div>
         )}
       </main>
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="단어 삭제"
+        message="선택한 단어를 삭제하시겠습니까?"
+        confirmText="삭제"
+        cancelText="취소"
+        onConfirm={confirmDelete}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
+      <Toast />
     </div>
   );
 };
