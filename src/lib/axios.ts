@@ -24,8 +24,6 @@ api.interceptors.request.use(
     return request;
   },
   (error) => {
-    // eslint-disable-next-line no-console
-    console.log("REQUEST ERROR", error);
     return Promise.reject(error);
   },
 );
@@ -64,8 +62,6 @@ api.interceptors.response.use(
     const data = error.response?.data;
     const message = data?.message ?? error.message ?? "알 수 없는 오류";
     const isUserError = data?.isUserError ?? false;
-    // eslint-disable-next-line no-console
-    console.log("RESPONSE ERROR", error);
     return Promise.reject({ message, isUserError });
   },
 );
