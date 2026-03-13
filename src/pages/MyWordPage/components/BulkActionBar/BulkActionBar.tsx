@@ -4,10 +4,10 @@ import { ArrowRightLeft, Trash2 } from "lucide-react";
 
 interface BulkActionBarProps {
   selectedCount: number;
-  isAllSelected: boolean;
-  onToggleSelectAll: () => void;
-  onChangeStatus: () => void;
-  onDelete: () => void;
+  isAllSelected?: boolean;
+  onToggleSelectAll?: () => void;
+  onChangeStatus?: () => void;
+  onDelete?: () => void;
   className?: string;
 }
 
@@ -34,37 +34,46 @@ const BulkActionBar = ({
           {selectedCount} item{selectedCount > 1 ? "s" : ""} selected
         </span>
 
-        <span className="text-border hidden md:inline">|</span>
-        <Button
-          variant="link"
-          size="sm"
-          onClick={onToggleSelectAll}
-          className="text-primary hover:text-primary/80 px-0 font-semibold underline-offset-4"
-        >
-          {isAllSelected ? "deselect all" : "select all"}
-        </Button>
+        {onToggleSelectAll && (
+          <>
+            <span className="text-border hidden md:inline">|</span>
+
+            <Button
+              variant="link"
+              size="sm"
+              onClick={onToggleSelectAll}
+              className="text-primary hover:text-primary/80 px-0 font-semibold underline-offset-4"
+            >
+              {isAllSelected ? "deselect all" : "select all"}
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="flex w-full items-center gap-2 md:w-auto">
-        <Button
-          variant="paper"
-          onClick={onChangeStatus}
-          disabled={isDisabled}
-          className="text-primary hover:text-primary flex-1 justify-center bg-white px-3 py-1.5 text-sm font-semibold shadow-xs transition-all hover:bg-white hover:font-bold active:scale-95 disabled:opacity-50 md:flex-none md:px-5 md:py-2"
-        >
-          <ArrowRightLeft className="size-4 shrink-0" strokeWidth={2.5} />
-          change Status
-        </Button>
+        {onChangeStatus && (
+          <Button
+            variant="paper"
+            onClick={onChangeStatus}
+            disabled={isDisabled}
+            className="text-primary hover:text-primary flex-1 justify-center bg-white px-3 py-1.5 text-sm font-semibold shadow-xs transition-all hover:bg-white hover:font-bold active:scale-95 disabled:opacity-50 md:flex-none md:px-5 md:py-2"
+          >
+            <ArrowRightLeft className="size-4 shrink-0" strokeWidth={2.5} />
+            change Status
+          </Button>
+        )}
 
-        <Button
-          variant="danger"
-          onClick={onDelete}
-          disabled={isDisabled}
-          className="flex-1 justify-center bg-white px-3 py-1.5 text-sm font-semibold text-red-500 shadow-xs transition-all hover:bg-red-50 active:scale-95 disabled:opacity-50 md:flex-none md:px-5 md:py-2"
-        >
-          <Trash2 className="size-4 shrink-0" strokeWidth={2.5} />
-          Delete
-        </Button>
+        {onDelete && (
+          <Button
+            variant="danger"
+            onClick={onDelete}
+            disabled={isDisabled}
+            className="flex-1 justify-center bg-white px-3 py-1.5 text-sm font-semibold text-red-500 shadow-xs transition-all hover:bg-red-50 active:scale-95 disabled:opacity-50 md:flex-none md:px-5 md:py-2"
+          >
+            <Trash2 className="size-4 shrink-0" strokeWidth={2.5} />
+            Delete
+          </Button>
+        )}
       </div>
     </div>
   );

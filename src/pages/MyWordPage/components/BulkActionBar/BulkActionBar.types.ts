@@ -1,6 +1,7 @@
 export interface BulkActionBarProps {
   selectedCount: number;
-  onDeselectAll?: () => void;
+  isAllSelected?: boolean;
+  onToggleSelectAll?: () => void;
   onChangeStatus?: () => void;
   onDelete?: () => void;
   className?: string;

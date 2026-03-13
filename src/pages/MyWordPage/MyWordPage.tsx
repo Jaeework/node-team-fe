@@ -58,7 +58,6 @@ const MyWordPage = () => {
       showToast({
         message: "단어가 삭제되었습니다.",
         type: "success",
-        position: "top",
       }),
     );
 
@@ -109,7 +108,9 @@ const MyWordPage = () => {
             <div className="hidden md:flex">
               <WordTypeToggle
                 selectedValue={headerProps.selectedType}
-                onSelect={headerProps.onTypeSelect}
+                onSelect={(value) =>
+                  headerProps.onTypeSelect(value as WordFilterType)
+                }
                 options={["All", "Word", "Idiom"]}
               />
             </div>

@@ -43,3 +43,9 @@ export interface NewsState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface UserNews {
+  _id: string;
+  createdAt: string;
+  news: News;
+}
