@@ -37,9 +37,7 @@ const getInitialFieldStates = (): FieldStates => {
 
 const useUpdateUser = () => {
   const dispatch = useAppDispatch();
-  const { user, isLoading, updateError } = useAppSelector(
-    (state) => state.user,
-  );
+  const { user, isLoading } = useAppSelector((state) => state.user);
   const [isEdit, setIsEdit] = useState(false);
   const [passwordEdit, setPasswordEdit] = useState(false);
 
@@ -210,7 +208,6 @@ const useUpdateUser = () => {
     formData,
     fieldStates,
     isLoading,
-    updateError,
     handleChange,
     handleCancel,
     handleSubmit,
