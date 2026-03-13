@@ -8,7 +8,7 @@ export interface Pagination {
 export interface ApiResponse<T> {
   success: boolean;
   data?: T | null;
-  pagination: Pagination;
+  pagination?: Pagination;
 }
 
 export interface ApiError {

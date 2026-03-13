@@ -5,7 +5,7 @@ import {
   type ApiResponse,
   type Pagination,
 } from "../../types/api.types";
-import type { UserWord } from "./word.types"; // WordState 타입도 types에 있다고 가정
+import type { UserWord } from "./word.types";
 
 interface WordState {
   userWords: UserWord[];
@@ -22,14 +22,14 @@ const initialState: WordState = {
 };
 
 export const getMyWords = createAsyncThunk<
-  { data: UserWord[]; pagination: Pagination },
+  { data: UserWord[]; pagination?: Pagination },
   {
     q?: string;
     status?: string;
     sort?: string;
     type?: string;
     page?: number;
-  } | void,
+  },
   { rejectValue: string }
 >("word/getMyWords", async (params, { rejectWithValue }) => {
   try {
@@ -120,7 +120,7 @@ const wordSlice = createSlice({
       .addCase(getMyWords.fulfilled, (state, action) => {
         state.isLoading = false;
         state.userWords = action.payload.data;
-        state.pagination = action.payload.pagination;
+        state.pagination = action.payload.pagination ?? null;
         state.error = null;
       })
       .addCase(getMyWords.rejected, (state, action) => {

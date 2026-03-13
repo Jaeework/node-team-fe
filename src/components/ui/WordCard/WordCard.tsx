@@ -126,12 +126,11 @@ const WordCard = ({
         <div className="border-border mt-auto pt-5">
           <div className="border-border relative border-t pt-3">
             <Button
+              type="button"
               variant="ghost"
               isFullWidth
               onClick={() => setIsExpanded(!isExpanded)}
-              onBlur={() => setTimeout(() => setIsExpanded(false), 100)}
               className="justify-between px-0 font-medium text-gray-500 hover:bg-transparent"
-              // px-0과 hover:bg-transparent는 디자인 의도에 따라 선택하세요
             >
               <span className="flex items-center gap-2">
                 <FileText className="h-4 w-4" />
