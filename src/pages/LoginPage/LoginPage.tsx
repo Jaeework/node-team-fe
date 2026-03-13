@@ -12,13 +12,8 @@ import LoadingSpinner from "../../components/ui/LoadingSpinner";
 
 const LoginPage = () => {
   const { isLoading } = useAppSelector((state) => state.user);
-  const {
-    loginError,
-    fieldStates,
-    handleChange,
-    handleSubmit,
-    handleGoogleLogin,
-  } = useLoginForm();
+  const { fieldStates, handleChange, handleSubmit, handleGoogleLogin } =
+    useLoginForm();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPassword = () => setShowPassword((prev) => !prev);
@@ -64,9 +59,6 @@ const LoginPage = () => {
           </h1>
           <p className="text-ink/50">Log in to access your dashboard</p>
         </div>
-        {loginError && (
-          <p className="text-center text-sm text-red-500">{loginError}</p>
-        )}
         <form className="space-y-6" onSubmit={handleSubmit}>
           {fields.map((field) => {
             const fieldName = field.name as keyof LoginFormData;

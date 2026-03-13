@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../features/hooks";
+import { useAppDispatch } from "../features/hooks";
 import { useEffect, useState } from "react";
 import {
   clearErrors,
@@ -16,7 +16,6 @@ const useLoginForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/";
-  const loginError = useAppSelector((state) => state.user.loginError);
 
   useEffect(() => {
     dispatch(clearErrors());
@@ -85,7 +84,6 @@ const useLoginForm = () => {
 
   return {
     formData,
-    loginError,
     fieldStates,
     handleChange,
     handleSubmit,

@@ -6,12 +6,6 @@ export interface NewsItem {
   title: string;
 }
 
-export interface NewsLink {
-  _id: string;
-  word: string;
-  news: NewsItem;
-}
-
 export interface Word {
   _id: string;
   text: string;
@@ -21,7 +15,7 @@ export interface Word {
   type: WordType;
   createdAt: string;
   updatedAt: string;
-  news?: NewsLink[]; //virtual field
+  news?: NewsItem[]; //virtual field
 }
 
 export interface UserWord {
