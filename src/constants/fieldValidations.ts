@@ -1,15 +1,16 @@
-import type { RegisterFormData } from "../RegisterPage.types";
-
-export type ValidationRule = {
+export type ValidationRule<T = { password?: string }> = {
   message: string;
-  validate: (value: string, formData?: RegisterFormData) => boolean;
+  validate: (value: string, formData?: T) => boolean;
   hideOnSuccess?: boolean;
 };
 
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const FIELD_VALIDATIONS: Partial<
-  Record<keyof RegisterFormData, ValidationRule[]>
+type FieldName = "nickname" | "email" | "password" | "secPassword";
+
+export const FIELD_VALIDATIONS: Record<
+  FieldName,
+  ValidationRule<{ password?: string }>[]
 > = {
   nickname: [
     {

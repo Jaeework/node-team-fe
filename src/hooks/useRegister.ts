@@ -8,10 +8,7 @@ import {
 } from "../features/user/userSlice";
 import type { RegisterFormData } from "../pages/RegisterPage/RegisterPage.types";
 import type { ValidationMessage } from "../components/ui/input-with-message/InputWithMessage.types";
-import {
-  EMAIL_REGEX,
-  FIELD_VALIDATIONS,
-} from "../pages/RegisterPage/constants/fieldValidations";
+import { EMAIL_REGEX, FIELD_VALIDATIONS } from "../constants/fieldValidations";
 
 type FieldStates = Partial<Record<keyof RegisterFormData, ValidationMessage[]>>;
 
@@ -111,7 +108,8 @@ const useRegister = () => {
   };
 
   const validateField = (name: keyof RegisterFormData, value: string) => {
-    const rules = FIELD_VALIDATIONS[name];
+    if (!(name in FIELD_VALIDATIONS)) return;
+    const rules = FIELD_VALIDATIONS[name as keyof typeof FIELD_VALIDATIONS];
     if (!rules) return;
 
     const messages: ValidationMessage[] = [];
@@ -202,7 +200,8 @@ const useRegister = () => {
     for (const name of fieldsToValidate) {
       const value = formData[name];
 
-      const rules = FIELD_VALIDATIONS[name];
+      if (!(name in FIELD_VALIDATIONS)) continue;
+      const rules = FIELD_VALIDATIONS[name as keyof typeof FIELD_VALIDATIONS];
       if (!rules) continue;
 
       const messages: ValidationMessage[] = [];
