@@ -212,7 +212,6 @@ const initialState: UserState = {
   isInitialized: false,
   registrationError: null,
   loginError: null,
-  updateError: null,
 };
 
 const userSlice = createSlice({
@@ -294,17 +293,13 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.pending, (state) => {
         state.isLoading = true;
-        state.updateError = null;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        state.updateError = null;
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(updateUser.rejected, (state) => {
         state.isLoading = false;
-        state.updateError =
-          action.payload || "프로필 수정 중 오류가 발생했습니다.";
       });
   },
 });

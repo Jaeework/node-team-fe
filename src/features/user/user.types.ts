@@ -25,5 +25,4 @@ export interface UserState {
   isInitialized: boolean;
   registrationError: string | null;
   loginError: string | null;
-  updateError: string | null;
 }
