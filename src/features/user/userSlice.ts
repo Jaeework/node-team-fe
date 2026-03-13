@@ -7,6 +7,7 @@ import type {
 } from "./user.types";
 import api from "../../lib/axios";
 import { isApiError, type ApiResponse } from "../../types/api.types";
+import { showToast } from "../toast/toastSlice";
 
 export const checkDuplicateEmail = createAsyncThunk<
   boolean,
@@ -46,7 +47,7 @@ export const registerUser = createAsyncThunk<
   "user/registerUser",
   async (
     { nickname, email, level, password, navigate },
-    { rejectWithValue },
+    { rejectWithValue, dispatch },
   ) => {
     try {
       if (!nickname || !email || !password) {
@@ -64,18 +65,34 @@ export const registerUser = createAsyncThunk<
 
       const data = res.data.data;
       if (!data) {
-        return rejectWithValue("회원가입 중 오류가 발생했습니다.");
+        const errorMsg = "회원가입 중 오류가 발생했습니다.";
+        dispatch(
+          showToast({ message: errorMsg, type: "error", position: "top" }),
+        );
+        return rejectWithValue(errorMsg);
       }
+
+      dispatch(
+        showToast({
+          message: "가입이 완료되었습니다. 로그인해주세요.",
+          type: "success",
+          position: "top",
+        }),
+      );
 
       navigate("/login");
       return data;
     } catch (error) {
-      if (isApiError(error) && error.isUserError) {
-        return rejectWithValue(
-          error.message || "회원가입 중 오류가 발생했습니다.",
-        );
-      }
-      return rejectWithValue("회원가입 중 오류가 발생했습니다.");
+      const errorMsg =
+        isApiError(error) && error.isUserError
+          ? error.message || "회원가입 중 오류가 발생했습니다."
+          : "회원가입 중 오류가 발생했습니다.";
+
+      dispatch(
+        showToast({ message: errorMsg, type: "error", position: "top" }),
+      );
+
+      return rejectWithValue(errorMsg);
     }
   },
 );
@@ -84,30 +101,46 @@ export const loginWithEmail = createAsyncThunk<
   User,
   { email: string; password: string },
   { rejectValue: string }
->("user/loginWithEmail", async ({ email, password }, { rejectWithValue }) => {
-  try {
-    if (!email || !password) {
-      return rejectWithValue("이메일과 패스워드를 입력해주세요.");
-    }
-    const res = await api.post<ApiResponse<LoginResponseData>>("/auth/signin", {
-      email,
-      password,
-    });
-    const data = res.data.data;
+>(
+  "user/loginWithEmail",
+  async ({ email, password }, { rejectWithValue, dispatch }) => {
+    try {
+      if (!email || !password) {
+        return rejectWithValue("이메일과 패스워드를 입력해주세요.");
+      }
+      const res = await api.post<ApiResponse<LoginResponseData>>(
+        "/auth/signin",
+        {
+          email,
+          password,
+        },
+      );
+      const data = res.data.data;
 
-    if (!data) {
-      return rejectWithValue("로그인 중 오류가 발생했습니다.");
-    }
+      if (!data) {
+        const errorMsg = "로그인 중 오류가 발생했습니다.";
+        dispatch(
+          showToast({ message: errorMsg, type: "error", position: "top" }),
+        );
+        return rejectWithValue(errorMsg);
+      }
 
-    sessionStorage.setItem("token", data.token);
-    return data.user;
-  } catch (error) {
-    if (isApiError(error) && error.isUserError) {
-      return rejectWithValue(error.message || "로그인 중 오류가 발생했습니다.");
+      sessionStorage.setItem("token", data.token);
+      return data.user;
+    } catch (error) {
+      const errorMsg =
+        isApiError(error) && error.isUserError
+          ? error.message || "로그인 중 오류가 발생했습니다."
+          : "로그인 중 오류가 발생했습니다.";
+
+      dispatch(
+        showToast({ message: errorMsg, type: "error", position: "top" }),
+      );
+
+      return rejectWithValue(errorMsg);
     }
-    return rejectWithValue("로그인 중 오류가 발생했습니다.");
-  }
-});
+  },
+);
 
 export const loginWithToken = createAsyncThunk<
   User,
@@ -136,7 +169,7 @@ export const loginWithGoogle = createAsyncThunk<
   User,
   string,
   { rejectValue: string }
->("user/loginWithGoogle", async (credential, { rejectWithValue }) => {
+>("user/loginWithGoogle", async (credential, { rejectWithValue, dispatch }) => {
   try {
     const res = await api.post<ApiResponse<LoginResponseData>>("/auth/google", {
       credential: credential,
@@ -145,16 +178,24 @@ export const loginWithGoogle = createAsyncThunk<
     const data = res.data.data;
 
     if (!data) {
-      return rejectWithValue("로그인 중 오류가 발생했습니다.");
+      const errorMsg = "데이터를 불러오지 못했습니다.";
+      dispatch(
+        showToast({ message: errorMsg, type: "error", position: "top" }),
+      );
+      return rejectWithValue(errorMsg);
     }
 
     sessionStorage.setItem("token", data.token);
     return data.user;
   } catch (error) {
-    if (isApiError(error) && error.isUserError) {
-      return rejectWithValue(error.message || "로그인 중 오류가 발생했습니다.");
-    }
-    return rejectWithValue("로그인 중 오류가 발생했습니다.");
+    const errorMsg =
+      isApiError(error) && error.isUserError
+        ? error.message || "로그인 중 오류가 발생했습니다."
+        : "로그인 중 오류가 발생했습니다.";
+
+    dispatch(showToast({ message: errorMsg, type: "error", position: "top" }));
+
+    return rejectWithValue(errorMsg);
   }
 });
 
