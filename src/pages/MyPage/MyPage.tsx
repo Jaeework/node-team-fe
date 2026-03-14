@@ -1,7 +1,7 @@
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useAppSelector, useAppDispatch } from "../../features/hooks";
 import ArticleCard from "../../components/article/ArticleCard";
-import WordCard from "../../components/ui/WordCard/WordCard";
+import WordCard from "../../components/common/WordCard/WordCard";
 import Button from "../../components/ui/button/Button";
 import { useEffect, useState } from "react";
 import { fetchArticles } from "../../features/news/newsSlice";

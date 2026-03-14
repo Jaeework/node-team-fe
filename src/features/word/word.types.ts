@@ -1,5 +1,9 @@
 export type WordType = "word" | "idiom" | "abbreviation";
 
+export type WordFilterType =
+  | "All"
+  | Capitalize<Exclude<WordType, "abbreviation">>;
+
 export interface NewsItem {
   _id?: string;
   id?: string;
