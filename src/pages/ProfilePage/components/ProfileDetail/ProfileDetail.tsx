@@ -111,14 +111,11 @@ const ProfileDetail = () => {
       <div className="border-primary/10 border-t pt-6">
         <h2 className="mb-4 text-xl font-bold">Learning Preferences</h2>
         <div className="space-y-6">
-          <div className="flex flex-col gap-2">
-            <Label size="sm">English Proficiency Level</Label>
-            <LevelSelector
-              selectedLevel={formData.level}
-              onChange={handleChange}
-              disabled={!isEdit}
-            />
-          </div>
+          <LevelSelector
+            selectedLevel={formData.level}
+            onChange={handleChange}
+            disabled={!isEdit}
+          />
         </div>
       </div>
       <div className="border-primary/10 flex flex-col justify-end gap-4 border-t pt-8 sm:flex-row">
