@@ -3,12 +3,12 @@ import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { fetchArticles } from "../../features/news/newsSlice";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
-import GridLayout from "../MyWordPage/components/GridLayout";
+import GridLayout from "../../components/my/GridLayout";
 import ArticleCard from "../../components/article/ArticleCard";
-import Pagination from "../../components/ui/Pagination/Pagination";
+import Pagination from "../../components/common/Pagination/Pagination";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import { Search } from "lucide-react";
-import WordTypeToggle from "../MyWordPage/components/WordTypeToggle/WordTypeToggle";
+import WordTypeToggle from "../../components/my/WordTypeToggle/TypeToggle";
 
 const ITEMS_PER_PAGE = 12;
 
