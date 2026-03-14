@@ -15,7 +15,7 @@ const useLoginForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from || "/";
+  const from = location.state?.from || "/articles";
 
   useEffect(() => {
     dispatch(clearErrors());
