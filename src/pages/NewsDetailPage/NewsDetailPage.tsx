@@ -3,7 +3,7 @@ import Button from "../../components/ui/button/Button";
 import Badge from "../../components/ui/Badge/Badge";
 import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
 import { BookOpen, Info } from "lucide-react";
-import WordCard from "../../components/ui/WordCard/WordCard";
+import WordCard from "../../components/common/WordCard/WordCard";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import { useNavigate } from "react-router-dom";

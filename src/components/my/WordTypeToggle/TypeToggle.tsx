@@ -1,13 +1,13 @@
-import { cn } from "../../../../lib/utils";
-import Button from "../../../../components/ui/button/Button";
-import type { WordTypeToggleProps } from "./WordTypeToggle.types";
+import { cn } from "../../../lib/utils";
+import Button from "../../ui/button/Button";
+import type { TypeToggleProps } from "./TypeToggle.types";
 
-const WordTypeToggle = ({
+const TypeToggle = ({
   options = ["All", "Word", "Idiom"],
   selectedValue = "Word",
   onSelect,
   className,
-}: WordTypeToggleProps) => {
+}: TypeToggleProps) => {
   const selectedIndex = Math.max(0, options.indexOf(selectedValue));
 
   return (
@@ -51,4 +51,4 @@ const WordTypeToggle = ({
   );
 };
 
-export default WordTypeToggle;
+export default TypeToggle;

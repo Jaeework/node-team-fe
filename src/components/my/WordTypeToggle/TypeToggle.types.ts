@@ -1,6 +1,4 @@
-export type WordFilterType = "All" | "Word" | "Idiom";
-
-export interface WordTypeToggleProps {
+export interface TypeToggleProps {
   options?: string[];
   selectedValue?: string;
   onSelect?: (value: string) => void;

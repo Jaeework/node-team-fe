@@ -3,20 +3,20 @@ import { useMyWord } from "../../hooks/useMyWord";
 import { useState } from "react";
 import { showToast } from "../../features/toast/toastSlice";
 
-import Header from "./components/Header/Header";
-import WordTypeToggle from "./components/WordTypeToggle/WordTypeToggle";
+import Header from "../../components/my/Header/Header";
+import TypeToggle from "../../components/my/WordTypeToggle/TypeToggle";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
-import BulkActionBar from "./components/BulkActionBar/BulkActionBar";
+import BulkActionBar from "../../components/my/BulkActionBar/BulkActionBar";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import Button from "../../components/ui/button/Button";
-import GridLayout from "./components/GridLayout";
-import WordCard from "../../components/ui/WordCard/WordCard";
+import GridLayout from "../../components/my/GridLayout";
+import WordCard from "../../components/common/WordCard/WordCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
-import Pagination from "../../components/ui/Pagination/Pagination";
+import Pagination from "../../components/common/Pagination/Pagination";
 import Toast from "../../components/ui/Toast/Toast";
-import ConfirmModal from "../../components/ui/ConfirmModal/ConfirmModal";
+import ConfirmModal from "../../components/common/ConfirmModal/ConfirmModal";
 
-import type { WordFilterType } from "./components/WordTypeToggle/WordTypeToggle.types";
+import type { WordFilterType } from "../../features/word/word.types";
 import { useAppDispatch } from "../../features/hooks";
 
 const MyWordPage = () => {
@@ -106,7 +106,7 @@ const MyWordPage = () => {
           <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:items-center">
             {/* Desktop WordTypeToggle */}
             <div className="hidden md:flex">
-              <WordTypeToggle
+              <TypeToggle
                 selectedValue={headerProps.selectedType}
                 onSelect={(value) =>
                   headerProps.onTypeSelect(value as WordFilterType)

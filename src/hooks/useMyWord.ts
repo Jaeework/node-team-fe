@@ -5,7 +5,7 @@ import {
   deleteWord,
   updateWordStatus,
 } from "../features/word/wordSlice";
-import type { WordFilterType } from "../pages/MyWordPage/components/WordTypeToggle/WordTypeToggle.types";
+import type { WordFilterType } from "../features/word/word.types";
 import api from "../lib/axios";
 
 export const useMyWord = () => {

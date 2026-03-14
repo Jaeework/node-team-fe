@@ -1,4 +1,4 @@
-import Button from "../button/Button";
+import Button from "../../ui/button/Button";
 import type { ConfirmModalProps } from "./ConfirmModal.types";
 
 const ConfirmModal = ({
