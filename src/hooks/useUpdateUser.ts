@@ -211,7 +211,6 @@ const useUpdateUser = () => {
     handleChange,
     handleCancel,
     handleSubmit,
-    resetForm,
   };
 };
 
