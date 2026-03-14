@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import Button from "../../components/ui/button/Button";
 import Badge from "../../components/ui/Badge/Badge";
 import NewsParagraph from "./components/NewsParagraph/NewsParagraph";
-import { BookOpen, Info } from "lucide-react";
+import { BookOpen, Info, ExternalLink } from "lucide-react";
 import WordCard from "../../components/ui/WordCard/WordCard";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
@@ -68,12 +68,11 @@ const NewsDetailPage = () => {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-      {/* 기사 */}
       <div className="bg-paper grid grid-cols-1 gap-8 md:grid-cols-12">
         <article className="border-border relative flex h-[calc(100vh-150px)] flex-col rounded-2xl bg-white p-7 shadow-sm md:col-span-8 md:p-10">
-          {/* 기사 정보 섹션(타이틀 위에) */}
+          {/* 기사 정보 섹션 */}
           <div className="shrink-0">
-            <section className="mb-2 text-sm text-gray-500">
+            <section className="mb-2 pr-5 text-sm text-gray-500">
               <Badge size="sm" color={currentNews.level} radius="full">
                 {"레벨 "}
                 {currentNews.level}
@@ -81,17 +80,22 @@ const NewsDetailPage = () => {
                 {currentNews.level}
                 {")"}
               </Badge>
-              {"  |  "}
-              발행 날짜:{" "}
+              {"    "}
+              <span className="text-gray-500">발행 날짜: </span>
               {new Date(currentNews.published_at).toLocaleDateString()}
-              {"  |  "} 기사출처:{" "}
-              <a
-                href={currentNews.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {currentNews.source}
-              </a>
+              {"  |  "}
+              <div className="mr-6 inline-flex items-center gap-1">
+                <span className="text-gray-500">기사출처: </span>
+                <a
+                  href={currentNews.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary inline-flex items-center underline"
+                >
+                  {currentNews.source}
+                  <ExternalLink size={15} />
+                </a>
+              </div>
             </section>
             <div className="absolute top-7 right-7 z-10 md:top-10 md:right-10">
               <Button
@@ -104,7 +108,6 @@ const NewsDetailPage = () => {
                       dispatch(saveUserArticle({ newsId: id }));
                     }
                   } else {
-                    /* 로그인 창으로 네비게이션 */
                     dispatch(
                       showToast({
                         message: "로그인이 필요합니다.",
@@ -141,7 +144,7 @@ const NewsDetailPage = () => {
               </div>
             </section>
 
-            {/* 약어 및 축약어 섹션 (하드코딩) */}
+            {/* 약어 및 축약어 섹션 */}
             <section className="border-border border-t pt-8 pb-4">
               <div className="flex items-center gap-1 pb-1 text-gray-500">
                 <h3 className="mb-4 flex items-center text-xs font-bold tracking-widest text-gray-500 uppercase">
@@ -164,7 +167,7 @@ const NewsDetailPage = () => {
             </section>
           </div>
         </article>
-        {/* 단어장 부분  */}
+        {/* 단어장 */}
         <aside className="space-y-6 md:col-span-4">
           <section className="border-border flex h-[calc(100vh-150px)] flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
             {/* 단어장 헤더 */}
