@@ -1,9 +1,11 @@
 export type UserLevel = "A2" | "B1" | "B2" | "C1";
+export type Provider = "local" | "google";
 export interface User {
-  id: string;
+  _id: string;
   nickname: string;
   email: string;
   level: UserLevel;
+  provider: Provider;
 }
 
 export interface LoginResponseData {
