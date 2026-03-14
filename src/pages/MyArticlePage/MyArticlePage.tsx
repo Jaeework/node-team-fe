@@ -15,7 +15,6 @@ import GridLayout from "../../components/my/GridLayout";
 import ArticleCard from "../../components/article/ArticleCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Pagination from "../../components/common/Pagination/Pagination";
-import Toast from "../../components/ui/Toast/Toast";
 import BulkActionBar from "../../components/my/BulkActionBar/BulkActionBar";
 import ConfirmModal from "../../components/common/ConfirmModal/ConfirmModal";
 import Button from "../../components/ui/button/Button";
@@ -71,17 +70,41 @@ const MyArticlePage = () => {
       await Promise.all(
         selectedIds.map((id) => dispatch(deleteUserNews(id)).unwrap()),
       );
+
       dispatch(
         showToast({
           message: "선택한 기사가 삭제되었습니다.",
           type: "success",
         }),
       );
+
       setSelectedIds([]);
       setIsDeleteModalOpen(false);
+
+      if (pagination && page > pagination.totalPages - 1) {
+        setPage(Math.max(1, page - 1));
+        return;
+      }
+
+      dispatch(
+        getUserNews({
+          q: searchTerm || undefined,
+          level: level === "All" ? undefined : level,
+          sort:
+            sort === "Latest"
+              ? "recent"
+              : sort === "Oldest"
+                ? "oldest"
+                : "title",
+          page,
+        }),
+      );
     } catch {
       dispatch(
-        showToast({ message: "기사 삭제에 실패했습니다.", type: "error" }),
+        showToast({
+          message: "기사 삭제에 실패했습니다.",
+          type: "error",
+        }),
       );
     }
   };
@@ -139,7 +162,6 @@ const MyArticlePage = () => {
             />
           </div>
 
-          {/* Mobile Filter */}
           <div className="flex w-full gap-2 md:hidden">
             <Dropdown
               label={level === "All" ? "Level" : level}
@@ -189,6 +211,7 @@ const MyArticlePage = () => {
             <GridLayout>
               {userNews.map((item) => {
                 const isSelected = selectedIds.includes(item._id);
+
                 return (
                   <div key={item._id} className="relative">
                     <Button
@@ -257,8 +280,6 @@ const MyArticlePage = () => {
         onConfirm={confirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
-
-      <Toast />
     </div>
   );
 };

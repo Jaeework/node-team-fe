@@ -13,7 +13,7 @@ import GridLayout from "../../components/my/GridLayout";
 import WordCard from "../../components/common/WordCard/WordCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
 import Pagination from "../../components/common/Pagination/Pagination";
-import Toast from "../../components/ui/Toast/Toast";
+
 import ConfirmModal from "../../components/common/ConfirmModal/ConfirmModal";
 
 import type { WordFilterType } from "../../features/word/word.types";
@@ -214,7 +214,6 @@ const MyWordPage = () => {
         onConfirm={confirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
-      <Toast />
     </div>
   );
 };
