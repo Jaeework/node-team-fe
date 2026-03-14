@@ -1,18 +1,15 @@
 import { Link } from "react-router-dom";
 import DetailPreview from "../../assets/preview/article_detail.png";
 import Button from "../../components/ui/button/Button";
-import { useAppSelector } from "../../features/hooks";
 
 const LandingPage = () => {
-  const { user } = useAppSelector((state) => state.user);
-
   return (
     <main className="bg-paper min-h-screen">
       <section className="px-6 pt-24 pb-24 lg:px-12">
         <div className="mx-auto grid max-w-7xl items-center gap-16 lg:grid-cols-2">
           <div className="space-y-10">
             <h1 className="text-ink text-5xl leading-[1.1] font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
-              Bite-Sized
+              Bite-sized
               <br />
               <span className="text-primary">Economic News</span>
               <br />
@@ -45,39 +42,15 @@ const LandingPage = () => {
             </p>
 
             <div className="flex justify-center gap-3 font-semibold lg:justify-start">
-              {user ? (
-                <Link to="/articles">
-                  <Button
-                    size="xl"
-                    variant="primary"
-                    className="hover:bg-primary !hover:text-background active:scale-[0.97]"
-                  >
-                    Go to Learn
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to="/register">
-                    <Button
-                      size="lg"
-                      variant="primary"
-                      className="hover:bg-primary !hover:text-background active:scale-[0.97]"
-                    >
-                      Register
-                    </Button>
-                  </Link>
-
-                  <Link to="/login">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="hover:bg-background !hover:text-ink active:scale-[0.97]"
-                    >
-                      Login
-                    </Button>
-                  </Link>
-                </>
-              )}
+              <Link to="/articles">
+                <Button
+                  size="xl"
+                  variant="primary"
+                  className="hover:bg-primary !hover:text-background active:scale-[0.97]"
+                >
+                  Start Learning
+                </Button>
+              </Link>
             </div>
           </div>
 
