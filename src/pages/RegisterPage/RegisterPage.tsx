@@ -79,13 +79,10 @@ const RegisterPage = () => {
             );
           })}
 
-          <div className="flex flex-col gap-3 pt-2">
-            <Label>English Proficiency Level</Label>
-            <LevelSelector
-              selectedLevel={formData.level}
-              onChange={handleChange}
-            />
-          </div>
+          <LevelSelector
+            selectedLevel={formData.level}
+            onChange={handleChange}
+          />
           <div className="flex items-start gap-3 pt-2">
             <input
               className="text-primary focus:ring-primary border-ink-300 mt-1 rounded"

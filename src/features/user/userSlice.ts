@@ -245,6 +245,40 @@ export const updateUser = createAsyncThunk<
   }
 });
 
+export const deleteUser = createAsyncThunk<void, void, { rejectValue: string }>(
+  "user/deleteUser",
+  async (_, { rejectWithValue, dispatch }) => {
+    try {
+      const res = await api.delete("/user/me");
+
+      if (!res?.data.success) {
+        const errorMsg = "계정 삭제 중 오류가 발생했습니다.";
+        dispatch(
+          showToast({ message: errorMsg, type: "error", position: "top" }),
+        );
+        return rejectWithValue(errorMsg);
+      }
+      sessionStorage.removeItem("token");
+      dispatch(
+        showToast({
+          message: "계정이 삭제되었습니다.",
+          type: "success",
+          position: "top",
+        }),
+      );
+    } catch (error) {
+      const errorMsg =
+        isApiError(error) && error.isUserError
+          ? error.message || "계정 삭제 중 오류가 발생했습니다."
+          : "계정 삭제 중 오류가 발생했습니다.";
+      dispatch(
+        showToast({ message: errorMsg, type: "error", position: "top" }),
+      );
+      return rejectWithValue(errorMsg);
+    }
+  },
+);
+
 const initialState: UserState = {
   user: null,
   isLoading: false,
@@ -339,6 +373,16 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(updateUser.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.user = null;
+      })
+      .addCase(deleteUser.rejected, (state) => {
         state.isLoading = false;
       });
   },
