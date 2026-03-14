@@ -8,6 +8,7 @@ import ArticleCard from "../../components/article/ArticleCard";
 import Pagination from "../../components/ui/Pagination/Pagination";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
 import { Search } from "lucide-react";
+import WordTypeToggle from "../MyWordPage/components/WordTypeToggle/WordTypeToggle";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -16,10 +17,18 @@ const ArticleListPage = () => {
   const { articles, pagination, isLoading, error } = useAppSelector(
     (state) => state.news,
   );
+  const { user } = useAppSelector((state) => state.user);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [level, setLevel] = useState("All");
+  const [level, setLevel] = useState(user?.level || "All");
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [prevUserLevel, setPrevUserLevel] = useState(user?.level);
+
+  if (user?.level !== prevUserLevel) {
+    setPrevUserLevel(user?.level);
+    setLevel(user?.level || "All");
+  }
 
   useEffect(() => {
     dispatch(
@@ -34,7 +43,7 @@ const ArticleListPage = () => {
 
   return (
     <main className="mx-auto max-w-7xl overflow-x-hidden px-4 py-8 md:px-8">
-      <section className="mb-16">
+      <section className="mb-5">
         <div className="mb-8 flex items-center justify-between">
           <div className="mb-8">
             <h1 className="mb-2 text-4xl font-black">Article Library</h1>
@@ -45,7 +54,7 @@ const ArticleListPage = () => {
         </div>
       </section>
       <section className="mb-10 space-y-6">
-        <div className="group relative">
+        <div className="group relative mb-3">
           <InputWithIcon
             size="lg"
             color="default"
@@ -59,20 +68,32 @@ const ArticleListPage = () => {
             }}
           />
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-6">
+        <div className="flex flex-row-reverse items-center justify-between gap-6">
           <div className="flex flex-wrap gap-4">
             <div className="relative min-w-35">
-              <Dropdown
-                label={level === "All" ? "Level" : level}
-                variant="outline"
-                radius="lg"
-                options={["All", "A2", "B1", "B2", "C1"]}
-                className="text-primary w-full text-sm font-semibold"
-                onSelect={(value) => {
-                  setLevel(value);
-                  setCurrentPage(1);
-                }}
-              />
+              <div className="hidden md:flex">
+                <WordTypeToggle
+                  selectedValue={level}
+                  onSelect={(value) => {
+                    setLevel(value);
+                    setCurrentPage(1);
+                  }}
+                  options={["All", "A2", "B1", "B2", "C1"]}
+                />
+              </div>
+              <div className="flex md:hidden">
+                <Dropdown
+                  label={level === "All" ? "Level" : level}
+                  variant="outline"
+                  radius="lg"
+                  options={["All", "A2", "B1", "B2", "C1"]}
+                  className="text-primary w-full text-sm font-semibold"
+                  onSelect={(value) => {
+                    setLevel(value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
