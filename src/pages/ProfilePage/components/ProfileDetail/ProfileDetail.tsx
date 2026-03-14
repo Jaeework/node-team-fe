@@ -50,7 +50,9 @@ const ProfileDetail = () => {
         <div
           className={cn(
             "grid transition-[grid-template-rows] duration-300 ease-in-out md:col-span-2",
-            isEdit ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+            isEdit && user?.provider === "local"
+              ? "grid-rows-[1fr]"
+              : "grid-rows-[0fr]",
           )}
         >
           <div className="overflow-hidden">
