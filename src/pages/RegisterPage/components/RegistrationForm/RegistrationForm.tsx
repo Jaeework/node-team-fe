@@ -79,7 +79,6 @@ const RegistrationForm = ({
         })}
 
         <div className="flex flex-col gap-3 pt-2">
-          <Label>English Proficiency Level</Label>
           <LevelSelector
             selectedLevel={formData.level}
             onChange={handleChange}
