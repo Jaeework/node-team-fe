@@ -1,5 +1,7 @@
 import type { Pagination } from "../../types/api.types";
 import type { Word } from "../word/word.types";
+
+export type NewsLevelType = "All" | "A2" | "B1" | "B2" | "C1";
 export interface News {
   _id: string;
   title: string;
@@ -8,7 +10,7 @@ export interface News {
   url: string;
   image: string;
   published_at: string;
-  level: "A2" | "B1" | "B2" | "C1";
+  level: Exclude<NewsLevelType, "All">;
   source: string;
   __v: number;
   createdAt: string;

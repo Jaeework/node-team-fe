@@ -7,6 +7,7 @@ import useUpdateUser from "../../../../hooks/useUpdateUser";
 import LoadingSpinner from "../../../../components/ui/LoadingSpinner";
 import LevelSelector from "../../../../components/common/LevelSelector/LevelSelector";
 import { cn } from "../../../../lib/utils";
+import DeleteAccountButton from "../DeleteAccountButton/DeleteAccountButton";
 
 const ProfileDetail = () => {
   const {
@@ -50,7 +51,9 @@ const ProfileDetail = () => {
         <div
           className={cn(
             "grid transition-[grid-template-rows] duration-300 ease-in-out md:col-span-2",
-            isEdit ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+            isEdit && user?.provider === "local"
+              ? "grid-rows-[1fr]"
+              : "grid-rows-[0fr]",
           )}
         >
           <div className="overflow-hidden">
@@ -89,6 +92,7 @@ const ProfileDetail = () => {
                   value={formData.password}
                   onChange={handleChange}
                   messages={fieldStates.password}
+                  autoComplete="new-password"
                 />
               </div>
               <div className="flex flex-col gap-2">
@@ -101,6 +105,7 @@ const ProfileDetail = () => {
                   value={formData.secPassword}
                   onChange={handleChange}
                   messages={fieldStates.secPassword}
+                  autoComplete="new-password"
                 />
               </div>
             </div>
@@ -111,62 +116,63 @@ const ProfileDetail = () => {
       <div className="border-primary/10 border-t pt-6">
         <h2 className="mb-4 text-xl font-bold">Learning Preferences</h2>
         <div className="space-y-6">
-          <div className="flex flex-col gap-2">
-            <Label size="sm">English Proficiency Level</Label>
-            <LevelSelector
-              selectedLevel={formData.level}
-              onChange={handleChange}
-              disabled={!isEdit}
-            />
-          </div>
+          <LevelSelector
+            selectedLevel={formData.level}
+            onChange={handleChange}
+            disabled={!isEdit}
+          />
         </div>
       </div>
-      <div className="border-primary/10 flex flex-col justify-end gap-4 border-t pt-8 sm:flex-row">
-        {isEdit ? (
-          <>
-            <Button
-              size="xl"
-              radius="xl"
-              variant={isLoading ? "disable" : "border"}
-              className="text-md font-bold transition-colors"
-              type="button"
-              disabled={isLoading}
-              onClick={handleCancel}
-            >
-              Cancel
-            </Button>
-            <Button
-              size="xl"
-              radius="xl"
-              variant={isLoading ? "disable" : "primary"}
-              className="shadow-accent-blue/20 text-md relative font-semibold shadow-lg transition-all"
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading && (
-                <span className="absolute inset-0 flex items-center justify-center">
-                  <LoadingSpinner size="sm" />
+
+      <div className="border-primary/10 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
+        <DeleteAccountButton />
+        <div className="order-1 flex w-full flex-col justify-end gap-4 sm:order-2 sm:flex-row">
+          {isEdit ? (
+            <>
+              <Button
+                size="xl"
+                radius="xl"
+                variant={isLoading ? "disable" : "border"}
+                className="text-md font-bold transition-colors"
+                type="button"
+                disabled={isLoading}
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="xl"
+                radius="xl"
+                variant={isLoading ? "disable" : "primary"}
+                className="shadow-accent-blue/20 text-md relative font-semibold shadow-lg transition-all"
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading && (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <LoadingSpinner size="sm" />
+                  </span>
+                )}
+                <span className={cn(isLoading && "invisible")}>
+                  <Save size={16} className="inline" />
+                  <span className="ml-1">Save Changes</span>
                 </span>
-              )}
-              <span className={cn(isLoading && "invisible")}>
-                <Save size={16} className="inline" />
-                <span className="ml-1">Save Changes</span>
-              </span>
+              </Button>
+            </>
+          ) : (
+            <Button
+              size="xl"
+              radius="xl"
+              variant="border"
+              className="text-md font-bold shadow-lg transition-colors"
+              type="button"
+              onClick={() => setIsEdit(true)}
+            >
+              <Pencil size={16} />
+              <h1>Edit Profile</h1>
             </Button>
-          </>
-        ) : (
-          <Button
-            size="xl"
-            radius="xl"
-            variant="border"
-            className="text-md font-bold shadow-lg transition-colors"
-            type="button"
-            onClick={() => setIsEdit(true)}
-          >
-            <Pencil size={16} />
-            <h1>Edit Profile</h1>
-          </Button>
-        )}
+          )}
+        </div>
       </div>
     </form>
   );

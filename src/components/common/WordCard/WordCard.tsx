@@ -10,10 +10,10 @@ import {
   BookOpen,
   CheckCircle,
 } from "lucide-react";
-import Button from "../button/Button";
+import Button from "../../ui/button/Button";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import Badge from "../Badge/Badge";
+import Badge from "../../ui/Badge/Badge";
 
 const WordCard = ({
   word,

@@ -1,4 +1,4 @@
-import logo from "../../assets/logo_icon_letter.png";
+import logo from "../../assets/logo/logo_icon_letter.png";
 import { useAppSelector } from "../../features/hooks";
 import ProfileDetail from "./components/ProfileDetail/ProfileDetail";
 import ProfileSidebar from "./components/Sidebar/ProfileSidebar";

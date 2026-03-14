@@ -35,12 +35,12 @@ export const checkDuplicateEmail = createAsyncThunk<
 
 export const registerUser = createAsyncThunk<
   User,
-  UserRequestData & { navigate: (path: string) => void },
+  UserRequestData,
   { rejectValue: string }
 >(
   "user/registerUser",
   async (
-    { nickname, email, level, password, navigate },
+    { nickname, email, level, password },
     { rejectWithValue, dispatch },
   ) => {
     try {
@@ -68,13 +68,12 @@ export const registerUser = createAsyncThunk<
 
       dispatch(
         showToast({
-          message: "가입이 완료되었습니다. 로그인해주세요.",
+          message: "가입이 완료되었습니다. 인증 메일을 확인해주세요.",
           type: "success",
           position: "top",
         }),
       );
 
-      navigate("/login");
       return data;
     } catch (error) {
       const errorMsg =
@@ -90,6 +89,22 @@ export const registerUser = createAsyncThunk<
     }
   },
 );
+
+export const verifyEmail = createAsyncThunk<
+  void,
+  string,
+  { rejectValue: string }
+>("user/verifyEmail", async (token, { rejectWithValue }) => {
+  try {
+    await api.get(`/auth/verify-email?token=${token}`);
+  } catch (error) {
+    const errorMsg =
+      isApiError(error) && error.isUserError
+        ? error.message || "인증 중 오류가 발생했습니다."
+        : "인증 중 오류가 발생했습니다.";
+    return rejectWithValue(errorMsg);
+  }
+});
 
 export const loginWithEmail = createAsyncThunk<
   User,
@@ -245,6 +260,40 @@ export const updateUser = createAsyncThunk<
   }
 });
 
+export const deleteUser = createAsyncThunk<void, void, { rejectValue: string }>(
+  "user/deleteUser",
+  async (_, { rejectWithValue, dispatch }) => {
+    try {
+      const res = await api.delete("/user/me");
+
+      if (!res?.data.success) {
+        const errorMsg = "계정 삭제 중 오류가 발생했습니다.";
+        dispatch(
+          showToast({ message: errorMsg, type: "error", position: "top" }),
+        );
+        return rejectWithValue(errorMsg);
+      }
+      sessionStorage.removeItem("token");
+      dispatch(
+        showToast({
+          message: "계정이 삭제되었습니다.",
+          type: "success",
+          position: "top",
+        }),
+      );
+    } catch (error) {
+      const errorMsg =
+        isApiError(error) && error.isUserError
+          ? error.message || "계정 삭제 중 오류가 발생했습니다."
+          : "계정 삭제 중 오류가 발생했습니다.";
+      dispatch(
+        showToast({ message: errorMsg, type: "error", position: "top" }),
+      );
+      return rejectWithValue(errorMsg);
+    }
+  },
+);
+
 const initialState: UserState = {
   user: null,
   isLoading: false,
@@ -252,6 +301,7 @@ const initialState: UserState = {
   isInitialized: false,
   registrationError: null,
   loginError: null,
+  verifyEmailStatus: "idle",
 };
 
 const userSlice = createSlice({
@@ -292,6 +342,18 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.registrationError =
           action.payload || "회원가입 중 오류가 발생했습니다.";
+      })
+      .addCase(verifyEmail.pending, (state) => {
+        state.isLoading = true;
+        state.verifyEmailStatus = "loading";
+      })
+      .addCase(verifyEmail.fulfilled, (state) => {
+        state.isLoading = false;
+        state.verifyEmailStatus = "success";
+      })
+      .addCase(verifyEmail.rejected, (state) => {
+        state.isLoading = false;
+        state.verifyEmailStatus = "error";
       })
       .addCase(loginWithEmail.pending, (state) => {
         state.isLoading = true;
@@ -339,6 +401,16 @@ const userSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(updateUser.rejected, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.user = null;
+      })
+      .addCase(deleteUser.rejected, (state) => {
         state.isLoading = false;
       });
   },

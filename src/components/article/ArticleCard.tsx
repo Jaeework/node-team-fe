@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { ArticleCardProps } from "./ArticleCard.types";
 import Badge from "../ui/Badge/Badge";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo/logo.png";
 
 const ArticleCard = ({ id, title, level, date, image }: ArticleCardProps) => {
   return (
@@ -11,7 +11,11 @@ const ArticleCard = ({ id, title, level, date, image }: ArticleCardProps) => {
     >
       <div className="h-36 w-full bg-gray-200">
         {image ? (
-          <img src={image} alt={title} className="h-full w-full object-cover" />
+          <img
+            src={image}
+            alt={title}
+            className="h-full w-full object-cover object-top"
+          />
         ) : (
           <div className="flex h-full items-center justify-center bg-slate-50 p-4">
             <img

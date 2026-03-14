@@ -1,20 +1,26 @@
-import { Search, SquareCheckBig } from "lucide-react";
+import { Search, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { getUserNews, deleteUserNews } from "../../features/news/userNewsSlice";
 import { showToast } from "../../features/toast/toastSlice";
+import { cn } from "../../lib/utils";
 
-import Header from "../MyWordPage/components/Header/Header";
-import WordTypeToggle from "../MyWordPage/components/WordTypeToggle/WordTypeToggle";
+import type { NewsLevelType } from "../../features/news/news.types";
+
+import Header from "../../components/my/Header/Header";
+import TypeToggle from "../../components/my/WordTypeToggle/TypeToggle";
 import Dropdown from "../../components/ui/Dropdown/Dropdown";
 import InputWithIcon from "../../components/ui/input-with-icon/InputWithIcon";
-import GridLayout from "../MyWordPage/components/GridLayout";
+import GridLayout from "../../components/my/GridLayout";
 import ArticleCard from "../../components/article/ArticleCard";
 import LoadingSpinner from "../../components/ui/LoadingSpinner";
-import Pagination from "../../components/ui/Pagination/Pagination";
-import Toast from "../../components/ui/Toast/Toast";
-import BulkActionBar from "../MyWordPage/components/BulkActionBar/BulkActionBar";
-import ConfirmModal from "../../components/ui/ConfirmModal/ConfirmModal";
+import Pagination from "../../components/common/Pagination/Pagination";
+import BulkActionBar from "../../components/my/BulkActionBar/BulkActionBar";
+import ConfirmModal from "../../components/common/ConfirmModal/ConfirmModal";
+import Button from "../../components/ui/button/Button";
+
+const LEVEL_OPTIONS: NewsLevelType[] = ["All", "A2", "B1", "B2", "C1"];
+const SORT_OPTIONS = ["Latest", "Oldest", "A to Z"];
 
 const MyArticlePage = () => {
   const dispatch = useAppDispatch();
@@ -26,14 +32,14 @@ const MyArticlePage = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [sort, setSort] = useState("Latest");
-  const [level, setLevel] = useState("All");
+  const [level, setLevel] = useState<NewsLevelType>("All");
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     dispatch(
       getUserNews({
-        q: searchTerm,
+        q: searchTerm || undefined,
         level: level === "All" ? undefined : level,
         sort:
           sort === "Latest" ? "recent" : sort === "Oldest" ? "oldest" : "title",
@@ -74,12 +80,30 @@ const MyArticlePage = () => {
 
       setSelectedIds([]);
       setIsDeleteModalOpen(false);
+
+      if (pagination && page > pagination.totalPages - 1) {
+        setPage(Math.max(1, page - 1));
+        return;
+      }
+
+      dispatch(
+        getUserNews({
+          q: searchTerm || undefined,
+          level: level === "All" ? undefined : level,
+          sort:
+            sort === "Latest"
+              ? "recent"
+              : sort === "Oldest"
+                ? "oldest"
+                : "title",
+          page,
+        }),
+      );
     } catch {
       dispatch(
         showToast({
           message: "기사 삭제에 실패했습니다.",
           type: "error",
-          position: "top",
         }),
       );
     }
@@ -104,7 +128,6 @@ const MyArticlePage = () => {
           <div className="w-full md:flex-1">
             <InputWithIcon
               size="lg"
-              color="default"
               leftIcon={<Search className="size-5" />}
               placeholder="기사 제목을 입력하세요."
               className="border-border bg-white px-4 py-1"
@@ -117,11 +140,11 @@ const MyArticlePage = () => {
           </div>
 
           <div className="hidden items-center gap-2 md:flex">
-            <WordTypeToggle
-              options={["All", "A2", "B1", "B2", "C1"]}
+            <TypeToggle
+              options={LEVEL_OPTIONS}
               selectedValue={level}
               onSelect={(value) => {
-                setLevel(value);
+                setLevel(value as NewsLevelType);
                 setPage(1);
               }}
             />
@@ -130,7 +153,7 @@ const MyArticlePage = () => {
               label={sort}
               variant="outline"
               radius="lg"
-              options={["Latest", "Oldest", "A to Z"]}
+              options={SORT_OPTIONS}
               className="text-primary text-sm font-semibold"
               onSelect={(value) => {
                 setSort(value);
@@ -144,10 +167,10 @@ const MyArticlePage = () => {
               label={level === "All" ? "Level" : level}
               variant="outline"
               radius="lg"
-              options={["All", "A2", "B1", "B2", "C1"]}
+              options={LEVEL_OPTIONS}
               className="text-primary w-full text-sm font-semibold"
               onSelect={(value) => {
-                setLevel(value);
+                setLevel(value as NewsLevelType);
                 setPage(1);
               }}
             />
@@ -156,7 +179,7 @@ const MyArticlePage = () => {
               label={sort}
               variant="outline"
               radius="lg"
-              options={["Latest", "Oldest", "A to Z"]}
+              options={SORT_OPTIONS}
               className="text-primary w-full text-sm font-semibold"
               onSelect={(value) => {
                 setSort(value);
@@ -191,22 +214,29 @@ const MyArticlePage = () => {
 
                 return (
                   <div key={item._id} className="relative">
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                        "absolute top-3 right-3 z-10 flex h-7 w-7 items-center justify-center p-0",
+                        "rounded-md border-2 border-[#2f5f8a] bg-white shadow-sm transition",
+                        "hover:scale-105 hover:bg-white active:scale-95",
+                        "overflow-visible",
+                      )}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         toggleSelection(item._id);
                       }}
-                      className="absolute top-3 right-3 z-10 flex h-7 w-7 items-center justify-center rounded-md border-2 border-[#2f5f8a] bg-white shadow-sm transition hover:scale-105"
                     >
                       {isSelected && (
-                        <SquareCheckBig
+                        <Check
                           size={18}
-                          strokeWidth={2.5}
-                          className="text-[#2f5f8a]"
+                          strokeWidth={3}
+                          className="shrink-0 text-[#2f5f8a]"
                         />
                       )}
-                    </button>
+                    </Button>
 
                     <ArticleCard
                       id={item.news._id}
@@ -250,8 +280,6 @@ const MyArticlePage = () => {
         onConfirm={confirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
-
-      <Toast />
     </div>
   );
 };

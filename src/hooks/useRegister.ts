@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../features/hooks";
 import {
   checkDuplicateEmail,
@@ -34,7 +33,6 @@ const getInitialFieldStates = (): FieldStates => {
 };
 
 const useRegister = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -55,6 +53,7 @@ const useRegister = () => {
   const [policy, setPolicy] = useState(false);
   const [policyError, setPolicyError] = useState("");
   const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
   const handleCheckEmail = async () => {
     const email = formData.email;
@@ -236,7 +235,11 @@ const useRegister = () => {
     if (isPolicyError) setPolicyError("약관에 동의해주세요.");
     if (!isFormValid || isPolicyError) return;
 
-    await dispatch(registerUser({ ...formData, navigate }));
+    const result = await dispatch(registerUser({ ...formData }));
+
+    if (registerUser.fulfilled.match(result)) {
+      setIsEmailSent(true);
+    }
   };
 
   return {
@@ -249,6 +252,7 @@ const useRegister = () => {
     handleChange,
     handlePolicyChange,
     handleSubmit,
+    isEmailSent,
   };
 };
 

@@ -8,7 +8,7 @@ import {
   LibraryBig,
   FolderHeart,
 } from "lucide-react";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo/logo.png";
 import Button from "../ui/button/Button";
 import { useAppDispatch, useAppSelector } from "../../features/hooks";
 import { logOut } from "../../features/user/userSlice";
