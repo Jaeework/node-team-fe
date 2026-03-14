@@ -20,6 +20,8 @@ export interface UserRequestData {
   password?: string;
 }
 
+export type VerifyEmailStatus = "idle" | "loading" | "success" | "error";
+
 export interface UserState {
   user: User | null;
   isLoading: boolean;
@@ -27,4 +29,5 @@ export interface UserState {
   isInitialized: boolean;
   registrationError: string | null;
   loginError: string | null;
+  verifyEmailStatus: VerifyEmailStatus;
 }

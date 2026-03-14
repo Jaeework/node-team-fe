@@ -12,6 +12,7 @@ import MyPage from "../pages/MyPage/MyPage";
 import MyArticlePage from "../pages/MyArticlePage/MyArticlePage";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 import ScrollToTop from "../components/common/ScrollToTop";
+import VerifyEmailPage from "../pages/VerifyEmailPage/VerifyEmailPage";
 
 const AppRouter = () => {
   return (
@@ -22,6 +23,7 @@ const AppRouter = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/articles/:id" element={<NewsDetailPage />} />
           <Route path="/articles" element={<ArticleListPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
         </Route>
         <Route element={<PrivateRoute />}>
           <Route element={<AppLayout />}>
