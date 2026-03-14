@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 // SNS 로고 아이콘과 메일 아이콘 추가
 import { Github, ChevronDown, Instagram, Twitter, Youtube } from "lucide-react";
 import { useState } from "react";
-import footerLogo from "../../assets/footer_logo.png";
+import footerLogo from "../../assets/logo/footer_logo.png";
 
 const developers = [
   { name: "소윤정", url: "https://github.com/Jaeework" },

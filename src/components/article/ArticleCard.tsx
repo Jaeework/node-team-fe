@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { ArticleCardProps } from "./ArticleCard.types";
 import Badge from "../ui/Badge/Badge";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo/logo.png";
 
 const ArticleCard = ({ id, title, level, date, image }: ArticleCardProps) => {
   return (

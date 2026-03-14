@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../../../../components/ui/button/Button";
-import ConfirmModal from "../../../../components/ui/ConfirmModal/ConfirmModal";
+import ConfirmModal from "../../../../components/common/ConfirmModal/ConfirmModal";
 import LoadingSpinner from "../../../../components/ui/LoadingSpinner";
 import { useAppDispatch, useAppSelector } from "../../../../features/hooks";
 import { useNavigate } from "react-router-dom";

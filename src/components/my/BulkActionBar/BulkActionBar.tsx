@@ -1,5 +1,5 @@
-import { cn } from "../../../../lib/utils";
-import Button from "../../../../components/ui/button/Button";
+import { cn } from "../../../lib/utils";
+import Button from "../../ui/button/Button";
 import { ArrowRightLeft, Trash2 } from "lucide-react";
 
 interface BulkActionBarProps {
