@@ -143,28 +143,30 @@ const NewsDetailPage = () => {
                 ))}
               </div>
             </section>
-
             {/* 약어 및 축약어 섹션 */}
-            <section className="border-border border-t pt-8 pb-4">
-              <div className="flex items-center gap-1 pb-1 text-gray-500">
-                <h3 className="mb-4 flex items-center text-xs font-bold tracking-widest text-gray-500 uppercase">
-                  <Info size={15} className="mr-1" />
-                  약어 및 축약어
-                </h3>
-              </div>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                {currentAbbreviations.map((text, i) => (
-                  <div key={i} className="flex items-baseline gap-2">
-                    <span className="text-primary block font-semibold whitespace-nowrap">
-                      {text.text}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {text.meaning}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </section>
+            {currentAbbreviations.length > 0 && (
+              <section className="border-border border-t pt-8 pb-4">
+                <div className="flex items-center gap-1 pb-1 text-gray-500">
+                  <h3 className="mb-4 flex items-center text-xs font-bold tracking-widest text-gray-500 uppercase">
+                    <Info size={15} className="mr-1" />
+                    약어 및 축약어
+                  </h3>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {currentAbbreviations.map((text, i) => (
+                    <div key={i} className="flex items-baseline gap-2">
+                      <span className="text-primary block font-semibold whitespace-nowrap">
+                        {text.text}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {text.meaning}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         </article>
         {/* 단어장 */}
@@ -201,15 +203,17 @@ const NewsDetailPage = () => {
             {/* 단어 리스트*/}
             <div
               ref={scrollRef}
-              className="hover:[&::-webkit-scrollbar-thumb]:bg-primary/30 flex flex-col items-start space-y-4 overflow-y-auto bg-gray-50/50 p-4 pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-track]:bg-transparent"
+              className="hover:[&::-webkit-scrollbar-thumb]:bg-primary/30 flex flex-1 flex-col space-y-4 overflow-y-auto bg-gray-50/50 p-4 pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-track]:bg-transparent"
             >
-              {!user
-                ? filteredWords.map((word, index) => (
+              {filteredWords.length > 0 ? (
+                !user ? (
+                  filteredWords.map((word, index) => (
                     <div key={index} className="w-full">
                       <WordCard word={word} />
                     </div>
                   ))
-                : filteredWords.map((word, index) => (
+                ) : (
+                  filteredWords.map((word, index) => (
                     <div key={index} className="w-full">
                       <WordCard
                         word={word}
@@ -219,7 +223,13 @@ const NewsDetailPage = () => {
                         }}
                       />
                     </div>
-                  ))}
+                  ))
+                )
+              ) : (
+                <div className="border-border text-ink/50 flex h-full min-h-40 w-full flex-1 items-center justify-center rounded-xl border-2 border-dashed text-sm font-medium">
+                  표시할 {filter === "word" ? "단어가" : "숙어가"} 없습니다.
+                </div>
+              )}
             </div>
             {user ? (
               <Button

@@ -169,22 +169,29 @@ const MyPage = () => {
           </Button>
         </div>
         {/* 저장한 뉴스 불러오기 3개 */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {displayUserNews.map((userNews) => (
-            <ArticleCard
-              key={userNews._id}
-              id={userNews._id}
-              title={userNews.news.title}
-              level={userNews.news.level}
-              date={
-                userNews.createdAt
-                  ? new Date(userNews.createdAt).toLocaleDateString()
-                  : ""
-              }
-              image={userNews.news.image || ""}
-            />
-          ))}
-        </div>
+        {displayUserNews.length > 0 ? (
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {displayUserNews.map((userNews) => (
+              <ArticleCard
+                key={userNews._id}
+                id={userNews._id}
+                title={userNews.news.title}
+                level={userNews.news.level}
+                date={
+                  userNews.createdAt
+                    ? new Date(userNews.createdAt).toLocaleDateString()
+                    : ""
+                }
+                image={userNews.news.image || ""}
+              />
+            ))}
+          </div>
+        ) : (
+          // 저장한 기사가 없을 때
+          <div className="border-border text-ink/50 flex h-40 items-center justify-center rounded-xl border-2 border-dashed font-medium">
+            저장한 기사가 없습니다.
+          </div>
+        )}
       </section>
       {/* 내 단어장 */}
       <section className="mb-16">
@@ -206,17 +213,23 @@ const MyPage = () => {
             <Search size={18} />
           </Button>
         </div>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          {/* 단어장 카드 컴포넌트 */}
-          {displayUserWords.map((userWord) => (
-            <WordCard
-              key={userWord._id}
-              word={userWord.word}
-              isDone={userWord.isDone}
-              newsList={userWord.word.news}
-            />
-          ))}
-        </div>
+        {displayUserWords.length > 0 ? (
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {displayUserWords.map((userWord) => (
+              <WordCard
+                key={userWord._id}
+                word={userWord.word}
+                isDone={userWord.isDone}
+                newsList={userWord.word.news}
+              />
+            ))}
+          </div>
+        ) : (
+          // 단어장이 비어있을 때
+          <div className="border-border text-ink/50 flex h-40 items-center justify-center rounded-xl border-2 border-dashed font-medium">
+            표시할 단어가 없습니다.
+          </div>
+        )}
       </section>
     </main>
   );
